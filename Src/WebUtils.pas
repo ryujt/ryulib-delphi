@@ -5,14 +5,10 @@ interface
 uses
   JsonData,
   WinInet,
-  Windows, SysUtils, Classes,
-  System.Net.URLClient, System.Net.HttpClient, System.Net.HttpClientComponent,
-  System.Net.Mime;
+  Windows, SysUtils, Classes;
 
 function GetHTTP(const AURL:string):string;
 function GetHTTP_JSON_Value(const AURL,AName:string):string;
-
-function PostHTTP(const AURL:string; AValues:TStringList):string;
 
 implementation
 
@@ -62,29 +58,6 @@ begin
     Result := JsonData.Values[AName];
   finally
     JsonData.Free;
-  end;
-end;
-
-function PostHTTP(const AURL:string; AValues:TStringList):string;
-var
-  ResultStream : TStringStream;
-  Client: TNetHTTPClient;
-  Request: TNetHTTPRequest;
-begin
-  Result := '';
-
-  ResultStream := TStringStream.Create;
-  Client:= TNetHTTPClient.Create(nil);
-  Request:= TNetHTTPRequest.Create(nil);
-
-  try
-    Request.Client := Client;
-    Request.Post(AURL, AValues, ResultStream, nil);
-    Result := ResultStream.DataString;
-  finally
-    Request.Free;
-    Client.Free;
-    ResultStream.Free;
   end;
 end;
 

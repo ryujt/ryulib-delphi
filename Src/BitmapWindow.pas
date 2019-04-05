@@ -169,6 +169,9 @@ constructor TBitmapWindow.Create(AOwner: TComponent);
 begin
   inherited;
 
+  DoubleBuffered := true;
+  ParentBackground := false;
+
   Self.BevelInner := bvNone;
   Self.BevelOuter := bvNone;
 

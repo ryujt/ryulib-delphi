@@ -52,8 +52,11 @@ procedure DelIniSection(FileName,Section:string);
 procedure DelIniKey(FileName,Section,Ident:string);
 
 procedure SaveTextToFile(AFileName,AText:string);
-function  LoadFileAsText(FileName:string):string;
+function LoadFileAsText(FileName:string):string;
+function LoadFileAsUTF8(AFilename:string):string;
+
 procedure SaveLogMessage(FileName,Msg:string);
+
 procedure AddDataToFile(FileName:string; var Data; Size:Integer);
 procedure ShellExecuteWait(FileName,Params,Directory:string);
 function GetStorageFreeSpace(const ADrive: string): Int64;
@@ -677,18 +680,38 @@ Begin
   End;
 End;
 
+function LoadFileAsUTF8(AFilename:string):string;
+var
+  f : TextFile;
+  line : string;
+begin
+  Result := '';
+
+  try
+    AssignFile(f, AFilename);
+    Reset(f);
+    SetTextCodePage(F, CP_UTF8);
+    while not Eof(f) do begin
+      ReadLn(f, line);
+      Result := Result + line + #13#10;
+    end;
+  finally
+    CloseFile(f);
+  end;
+end;
+
 procedure SaveLogMessage(FileName,Msg:String);
 var
   LogFile : TextFile;
 begin
-  Assign(LogFile, FileName);
+  AssignFile(LogFile, FileName);
   try
     if FileExists(FileName) then Append(LogFile)
     else Rewrite(LogFile);
     WriteLn(LogFile, Msg);
     Flush(LogFile);
   finally
-    Close(LogFile);
+    CloseFile(LogFile);
   end;
 end;
 

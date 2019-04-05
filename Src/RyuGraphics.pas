@@ -666,6 +666,7 @@ begin
     if (AControl.Tag <> 99999) and (not WinControl.ParentBackground) then begin
       AControl.ControlStyle := AControl.ControlStyle + [csOpaque];
       WinControl.DoubleBuffered := true;
+      WinControl.ParentBackground := false;
     end;
 
     for Loop := 0 to WinControl.ControlCount-1 do MakeOpaque(WinControl.Controls[Loop]);
