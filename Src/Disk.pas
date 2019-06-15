@@ -53,6 +53,8 @@ procedure DelIniKey(FileName,Section,Ident:string);
 
 procedure SaveTextToFile(AFileName,AText:string);
 function LoadFileAsText(FileName:string):string;
+
+procedure SaveTextToUTF8(AFileName,AText:string);
 function LoadFileAsUTF8(AFilename:string):string;
 
 procedure SaveLogMessage(FileName,Msg:string);
@@ -679,6 +681,20 @@ Begin
     fs.Free;
   End;
 End;
+
+procedure SaveTextToUTF8(AFileName,AText:string);
+var
+  f : TextFile;
+begin
+  try
+    AssignFile(f, AFilename);
+    Rewrite(f);
+    SetTextCodePage(F, CP_UTF8);
+    Write(f, AText);
+    Close(f);
+  finally
+  end;
+end;
 
 function LoadFileAsUTF8(AFilename:string):string;
 var
