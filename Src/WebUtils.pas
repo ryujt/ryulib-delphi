@@ -4,10 +4,11 @@ interface
 
 uses
   JsonData,
-  WinInet,
+  WinInet, idHTTP,
   Windows, SysUtils, Classes;
 
 function GetHTTP(const AURL:string):string;
+function GetHTTP_UTF8(const AURL:string):string;
 function GetHTTP_JSON_Value(const AURL,AName:string):string;
 
 implementation
@@ -46,6 +47,26 @@ begin
   Result := ResultLine;
 end;
 
+function GetHTTP_UTF8(const AURL:string):string;
+var
+  rbstr: RawByteString;
+  IdHTTP : TIdHTTP;
+  MemoryStream: TMemoryStream;
+begin
+  Result := '';
+
+  IdHTTP := TIdHTTP.Create(nil);
+  MemoryStream := TMemoryStream.Create;
+  try
+    IdHTTP.Get(AURL, MemoryStream);
+    rbstr := PAnsiChar(MemoryStream.Memory);
+    Result := UTF8Decode(rbstr);
+  finally
+    IdHTTP.Free;
+    MemoryStream.Free;
+  end;
+end;
+
 function GetHTTP_JSON_Value(const AURL,AName:string):string;
 var
   JsonData : TJsonData;
@@ -62,3 +83,4 @@ begin
 end;
 
 end.
+
