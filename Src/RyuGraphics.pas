@@ -59,7 +59,9 @@ function FindMonitorRect(AX,AY:integer):TRect;
 function FindMonitorNo(AX,AY:integer):integer;
 
 function IsWindowMaximized(ALeft,ATop,AWidth,AHeight:integer):boolean;
-function IsWindowInMonitorAreas(ALeft,ATop,AWidth,AHeight:integer):boolean;
+
+function IsWindowInMonitorAreas(ALeft,ATop,AWidth,AHeight:integer):boolean; overload;
+function IsWindowInMonitorAreas(ALeft,ATop:integer):boolean; overload;
 
 procedure FalshWindow(AHandle:HWND; ACount,ATimeOut:integer);
 
@@ -756,6 +758,35 @@ begin
 
     if CheckCollision(A, B) then begin
       Result := true;
+      Break;
+    end;
+  end;
+end;
+
+function IsWindowInMonitorAreas(ALeft,ATop:integer):boolean;
+var
+  Loop: Integer;
+  P : TPoint;
+  R : TRect;
+  Monitor : TMonitor;
+begin
+  Result := true;
+
+  P := Point(ALeft, ATop);
+
+  for Loop := 0 to Screen.MonitorCount-1 do begin
+    Monitor := Screen.Monitors[Loop];
+
+    R :=
+      Rect(
+        Monitor.Left,
+        Monitor.Top,
+        Monitor.Left + Monitor.Width,
+        Monitor.Top  + Monitor.Height
+      );
+
+    if not PtInRect(R, P) then begin
+      Result := false;
       Break;
     end;
   end;

@@ -14,6 +14,8 @@ const
 type
   TDrawBitmapFunction = reference to function(Bitmap:TBitmap):boolean;
 
+  // TODO: Graphic32로 변경, gl 제거, UseVideoAccelerator 옵션 제거
+
   TBitmapOutput = class (TScrollBox)
   private
     FOldWidth, FOldHeight, FOldBitmapWidth, FOldBitmapHeight : integer;

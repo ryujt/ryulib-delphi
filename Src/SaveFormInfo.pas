@@ -36,6 +36,11 @@ begin
   iLeft := IniInteger(GetExecPath + 'FormInfo.ini', FFormName, 'Left', ALeft);
   iTop := IniInteger(GetExecPath + 'FormInfo.ini', FFormName, 'Top', ATop);
 
+  if not IsWindowInMonitorAreas(iLeft, iTop) then begin
+     iLeft := 0;
+     iTop := 0;
+  end;
+
   iWidth := AWidth;
   iTemp := IniInteger(GetExecPath + 'FormInfo.ini', FFormName, 'Width', AWidth);
   if iTemp <> 0 then iWidth := iTemp;
