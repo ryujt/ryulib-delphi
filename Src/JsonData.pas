@@ -49,6 +49,7 @@ type
   public
     constructor Create; overload;
     constructor Create(AJsonObject:TJSONObject); overload;
+    constructor Create(AText:string); overload;
     destructor Destroy; override;
 
     procedure LoadFromFile(AFileName:string);
@@ -98,6 +99,11 @@ end;
 procedure TJsonData.Delete(AIndex: integer);
 begin
   FJSONObject.RemovePair(GetNames(AIndex));
+end;
+
+constructor TJsonData.Create(AText: string);
+begin
+  FJSONObject := TJSONObject(TJSONObject.ParseJSONValue(AText));
 end;
 
 procedure TJsonData.Delete(AName: string);
