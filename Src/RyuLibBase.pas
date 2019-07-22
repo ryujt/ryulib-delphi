@@ -59,6 +59,7 @@ type
   TPacketEvent = procedure (Sender:TObject; APacket:TMemory) of object;
   TDataEvent = procedure (Sender:TObject; AData:pointer; ASize:integer) of object;
   TDataAndTagEvent = procedure (Sender:TObject; AData:pointer; ASize:integer; ATag:pointer) of object;
+  TBooleanEvent = procedure (Sender:TObject; AResult:boolean) of object;
   TIntegerEvent = procedure (Sender:TObject; AValue:Integer) of object;
   TStringEvent = procedure (Sender:TObject; const AText:string) of object;
   TMsgAndCodeEvent = procedure (Sender:TObject; const AMsg:string; ACode:integer) of object;
