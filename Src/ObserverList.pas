@@ -4,7 +4,7 @@ unit ObserverList;
 interface
 
 uses
-  DebugTools, ValueList, HandleComponent, SyncValues,
+  DebugTools, JsonData, HandleComponent, SyncValues,
   Windows, Messages, Classes, SysUtils, Types, SyncObjs;
 
 const
@@ -23,7 +23,7 @@ type
   private
     FList : TList;
     FCS : TCriticalSection;
-    procedure do_Notify(Observer:TObject; Packet:TValueList);
+    procedure do_Notify(Observer:TObject; Packet:TJsonData);
     procedure do_WM_ASYNC_BROADCAST(var Msg: TMessage); message WM_ASYNC_BROADCAST;
     procedure do_RemoveItems;
   private
@@ -46,25 +46,25 @@ type
     procedure Remove(Observer:TObject);
 
     /// Send synchronous message.
-    procedure BroadCast(APacket:TValueList); overload;
+    procedure BroadCast(APacket:TJsonData); overload;
 
     /// Send synchronous message.
     procedure BroadCast(AText:string); overload;
 
     /// Send synchronous message to other observers but except Sender.
-    procedure BroadCastToOther(Sender:TObject; APacket:TValueList); overload;
+    procedure BroadCastToOther(Sender:TObject; APacket:TJsonData); overload;
 
     /// Send synchronous message to other observers but except Sender.
     procedure BroadCastToOther(Sender:TObject; AText:string); overload;
 
     /// Send asynchronous message.
-    procedure AsyncBroadcast(APacket:TValueList); overload;
+    procedure AsyncBroadcast(APacket:TJsonData); overload;
 
     /// Send asynchronous message.
     procedure AsyncBroadcast(AText:string); overload;
 
     /// Send synchronous message to Observer.
-    procedure Notify(Observer:TObject; APacket:TValueList); overload;
+    procedure Notify(Observer:TObject; APacket:TJsonData); overload;
 
     /// Send synchronous message to Observer.
     procedure Notify(Observer:TObject; AText:string); overload;
@@ -93,10 +93,10 @@ begin
   end;
 end;
 
-procedure TObserverList.BroadCast(APacket:TValueList);
+procedure TObserverList.BroadCast(APacket:TJsonData);
 var
   Loop : Integer;
-  Packet : TValueList;
+  Packet : TJsonData;
 begin
   if not Active then Exit;
 
@@ -104,7 +104,7 @@ begin
 
   FCS.Enter;
   try
-    Packet := TValueList.Create;
+    Packet := TJsonData.Create;
     try
       Packet.Text := APacket.Text;
       for Loop := FList.Count-1 downto 0 do do_Notify(FList[Loop], Packet);
@@ -116,13 +116,13 @@ begin
   end;
 end;
 
-procedure TObserverList.AsyncBroadcast(APacket: TValueList);
+procedure TObserverList.AsyncBroadcast(APacket: TJsonData);
 var
-  Packet : TValueList;
+  Packet : TJsonData;
 begin
   if not Active then Exit;
 
-  Packet := TValueList.Create;
+  Packet := TJsonData.Create;
   Packet.Text := APacket.Text;
 
   PostMessage(Handle, WM_ASYNC_BROADCAST, Integer(Packet), 0);
@@ -130,11 +130,11 @@ end;
 
 procedure TObserverList.AsyncBroadcast(AText: string);
 var
-  Packet : TValueList;
+  Packet : TJsonData;
 begin
   if not Active then Exit;
 
-  Packet := TValueList.Create;
+  Packet := TJsonData.Create;
   Packet.Text := AText;
 
   PostMessage(Handle, WM_ASYNC_BROADCAST, Integer(Packet), 0);
@@ -142,11 +142,11 @@ end;
 
 procedure TObserverList.BroadCast(AText: string);
 var
-  Packet : TValueList;
+  Packet : TJsonData;
 begin
   if not Active then Exit;
 
-  Packet := TValueList.Create;
+  Packet := TJsonData.Create;
   try
     Packet.Text := AText;
     BroadCast(Packet);
@@ -155,7 +155,7 @@ begin
   end;
 end;
 
-procedure TObserverList.BroadCastToOther(Sender: TObject; APacket: TValueList);
+procedure TObserverList.BroadCastToOther(Sender: TObject; APacket: TJsonData);
 var
   Loop : Integer;
 begin
@@ -174,11 +174,11 @@ end;
 
 procedure TObserverList.BroadCastToOther(Sender: TObject; AText: string);
 var
-  Packet : TValueList;
+  Packet : TJsonData;
 begin
   if not Active then Exit;
 
-  Packet := TValueList.Create;
+  Packet := TJsonData.Create;
   try
     Packet.Text := AText;
     BroadCastToOther(Sender, Packet);
@@ -219,9 +219,9 @@ begin
   inherited;
 end;
 
-procedure TObserverList.do_Notify(Observer: TObject; Packet: TValueList);
+procedure TObserverList.do_Notify(Observer: TObject; Packet: TJsonData);
 var
-  Proc : procedure (Packet:TValueList) of object;
+  Proc : procedure (Packet:TJsonData) of object;
 begin
   // Notify 도중에 다시 Notify가 중복되지 않도록 조심, 재귀호출
   // 해당 Observer가 이미 삭제되었는데도, Remove 되지 않는 경우 조심
@@ -245,7 +245,7 @@ end;
 
 procedure TObserverList.do_WM_ASYNC_BROADCAST(var Msg: TMessage);
 var
-  Packet : TValueList;
+  Packet : TJsonData;
 begin
   Packet := Pointer(Msg.WParam);
   try
@@ -262,9 +262,9 @@ end;
 
 procedure TObserverList.Notify(Observer: TObject; AText: string);
 var
-  Packet : TValueList;
+  Packet : TJsonData;
 begin
-  Packet := TValueList.Create;
+  Packet := TJsonData.Create;
   try
     Packet.Text := AText;
     Notify(Observer, Packet);
@@ -273,7 +273,7 @@ begin
   end;
 end;
 
-procedure TObserverList.Notify(Observer: TObject; APacket: TValueList);
+procedure TObserverList.Notify(Observer: TObject; APacket: TJsonData);
 begin
   set_LastCommand( APacket.Values['Code'] );
 
