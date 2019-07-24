@@ -4,7 +4,7 @@ unit Core;
 interface
 
 uses
-  View, Option, ValueList,
+  View, Option, JsonData,
   SysUtils, Classes;
 
 type

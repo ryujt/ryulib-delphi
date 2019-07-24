@@ -4,7 +4,7 @@ unit View;
 interface
 
 uses
-  ObserverList, ValueList,
+  ObserverList, JsonData,
   Classes, SysUtils, Graphics;
 
 type
@@ -93,9 +93,9 @@ end;
 
 procedure TView.sp_Finalize;
 var
-  Params : TValueList;
+  Params : TJsonData;
 begin
-  Params := TValueList.Create;
+  Params := TJsonData.Create;
   try
     Params.Values['Code'] := 'Finalize';
     FObserverList.Broadcast(Params);
@@ -106,9 +106,9 @@ end;
 
 procedure TView.sp_Initialize;
 var
-  Params : TValueList;
+  Params : TJsonData;
 begin
-  Params := TValueList.Create;
+  Params := TJsonData.Create;
   try
     Params.Values['Code'] := 'Initialize';
     FObserverList.AsyncBroadcast(Params);
@@ -119,9 +119,9 @@ end;
 
 procedure TView.sp_SystemMessage(AMsg: string; AColor: TColor);
 var
-  Params : TValueList;
+  Params : TJsonData;
 begin
-  Params := TValueList.Create;
+  Params := TJsonData.Create;
   try
     Params.Values['Code'] := 'SystemMessage';
     Params.Values['Msg'] := AMsg;
@@ -135,9 +135,9 @@ end;
 
 procedure TView.sp_Terminate(AMsg: string);
 var
-  Params : TValueList;
+  Params : TJsonData;
 begin
-  Params := TValueList.Create;
+  Params := TJsonData.Create;
   try
     Params.Values['Code'] := 'Terminate';
     Params.Values['Msg']  := AMsg;
@@ -150,9 +150,9 @@ end;
 
 procedure TView.sp_ViewIsReady;
 var
-  Params : TValueList;
+  Params : TJsonData;
 begin
-  Params := TValueList.Create;
+  Params := TJsonData.Create;
   try
     Params.Values['Code'] := 'ViewIsReady';
     FObserverList.AsyncBroadcast(Params);
