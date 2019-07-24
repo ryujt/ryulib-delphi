@@ -3,7 +3,7 @@ unit SyncList;
 interface
 
 uses
-  Classes, SysUtils, SyncObjs, ValueList;
+  Classes, SysUtils, SyncObjs, JsonData;
 
 type
   TSyncList = class

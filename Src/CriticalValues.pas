@@ -3,7 +3,7 @@ unit CriticalValues;
 interface
 
 uses
-  ValueList,
+  JsonData,
   Classes, SysUtils, SyncObjs;
 
 type
@@ -21,7 +21,7 @@ type
 
   TCriticalValues = class(TCriticalValueBase)
   private
-    FLines : TValueList;
+    FLines : TJsonData;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -30,7 +30,7 @@ type
     procedure SetInteger(AName:string; AValue:integer);
     procedure SetBoolean(AName:string; AValue:boolean);
 
-    property Lines : TValueList read FLines;
+    property Lines : TJsonData read FLines;
   end;
 
   TCriticalString = class(TCriticalValueBase)
@@ -46,7 +46,7 @@ type
 
   TCriticalStringList = class(TCriticalValueBase)
   private
-    FLines : TValueList;
+    FLines : TJsonData;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -54,7 +54,7 @@ type
     procedure Add(AText:string);
     function Get:string;
 
-    property Lines : TValueList read FLines;
+    property Lines : TJsonData read FLines;
   end;
 
 implementation
@@ -91,7 +91,7 @@ constructor TCriticalValues.Create;
 begin
   inherited;
 
-  FLines := TValueList.Create;
+  FLines := TJsonData.Create;
 end;
 
 destructor TCriticalValues.Destroy;
@@ -166,7 +166,7 @@ constructor TCriticalStringList.Create;
 begin
   inherited;
 
-  FLines := TValueList.Create;
+  FLines := TJsonData.Create;
 end;
 
 destructor TCriticalStringList.Destroy;
