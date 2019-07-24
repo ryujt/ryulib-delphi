@@ -78,7 +78,47 @@ type
     property Text : string read GetText write SetText;
   end;
 
+procedure StringsToJson(const AText:string; const AJsonData:TJsonData); overload;
+function StringsToJson(const AText:string):string; overload;
+
 implementation
+
+procedure StringsToJson(const AText:string; const AJsonData:TJsonData);
+var
+  i: Integer;
+  lines : TStringList;
+  name, value : string;
+begin
+  lines := TStringList.Create;
+  try
+    lines.Text := AText;
+    for i := 0 to lines.Count-1 do begin
+      if Pos('=', lines[i]) = 0  then Continue;
+
+      name := lines.Names[i];
+      value := lines.ValueFromIndex[i];
+
+      AJsonData.Values[name] := value;
+    end;
+  finally
+    lines.Free;
+  end;
+end;
+
+function StringsToJson(const AText:string):string;
+var
+  JsonData : TJsonData;
+begin
+  Result := '';
+
+  JsonData := TJsonData.Create;
+  try
+    StringsToJson(AText, JsonData);
+    Result := JsonData.Text;
+  finally
+    JsonData.Free;
+  end;
+end;
 
 { TResponseData }
 
