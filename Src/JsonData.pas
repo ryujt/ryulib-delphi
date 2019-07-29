@@ -99,6 +99,10 @@ begin
       value := lines.ValueFromIndex[i];
 
       AJsonData.Values[name] := value;
+
+      {$IFDEF DEBUG}
+//      Trace( Format('name: %s, value: %s - %s', [name, value, AJsonData.Text]) );
+      {$ENDIF}
     end;
   finally
     lines.Free;
