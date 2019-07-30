@@ -78,12 +78,12 @@ type
     property Text : string read GetText write SetText;
   end;
 
-procedure StringsToJson(const AText:string; const AJsonData:TJsonData); overload;
-function StringsToJson(const AText:string):string; overload;
+procedure StringsToJson(const AText,ADelimiter:string; const AJsonData:TJsonData); overload;
+function StringsToJson(const AText,ADelimiter:string):string; overload;
 
 implementation
 
-procedure StringsToJson(const AText:string; const AJsonData:TJsonData);
+procedure StringsToJson(const AText,ADelimiter:string; const AJsonData:TJsonData);
 var
   i: Integer;
   lines : TStringList;
@@ -91,12 +91,18 @@ var
 begin
   lines := TStringList.Create;
   try
-    lines.Text := AText;
+    lines.StrictDelimiter := true;
+    lines.Delimiter := '/';
+    lines.DelimitedText := AText;
+
     for i := 0 to lines.Count-1 do begin
       if Pos('=', lines[i]) = 0  then Continue;
 
       name := lines.Names[i];
       value := lines.ValueFromIndex[i];
+
+      // TODO: escape 문자가 오류를 일으키고 있어서 / 로 치환해서 임시 처리
+      value := StringReplace(value, '\', '/', [rfReplaceAll]);
 
       AJsonData.Values[name] := value;
     end;
@@ -105,7 +111,7 @@ begin
   end;
 end;
 
-function StringsToJson(const AText:string):string;
+function StringsToJson(const AText,ADelimiter:string):string;
 var
   JsonData : TJsonData;
 begin
@@ -113,7 +119,7 @@ begin
 
   JsonData := TJsonData.Create;
   try
-    StringsToJson(AText, JsonData);
+    StringsToJson(AText,ADelimiter, JsonData);
     Result := JsonData.Text;
   finally
     JsonData.Free;
