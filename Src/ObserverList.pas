@@ -100,6 +100,10 @@ var
 begin
   if not Active then Exit;
 
+  {$IFDEF DEBUG}
+  Trace('TObserverList.BroadCast - ' + APacket.Text);
+  {$ENDIF}
+
   set_LastCommand( APacket.Values['Code'] );
 
   FCS.Enter;
@@ -121,6 +125,10 @@ var
   Packet : TJsonData;
 begin
   if not Active then Exit;
+
+  {$IFDEF DEBUG}
+  Trace('TObserverList.AsyncBroadcast - ' + APacket.Text);
+  {$ENDIF}
 
   Packet := TJsonData.Create;
   Packet.Text := APacket.Text;
