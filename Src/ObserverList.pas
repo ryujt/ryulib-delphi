@@ -142,6 +142,10 @@ var
 begin
   if not Active then Exit;
 
+  {$IFDEF DEBUG}
+  Trace('TObserverList.AsyncBroadcast - ' + AText);
+  {$ENDIF}
+
   Packet := TJsonData.Create;
   Packet.Text := AText;
 
