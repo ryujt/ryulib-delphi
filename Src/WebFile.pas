@@ -3,7 +3,7 @@ unit WebFile;
 interface
 
 uses
-  DebugTools,  Disk, IdComponent, IdHTTP,
+  DebugTools, RyuLibBase, Disk, IdComponent, IdHTTP,
   Windows, SysUtils, Classes, Wininet;
 
 type
@@ -19,6 +19,7 @@ type
     FOnDownloadBegin: TNotifyEvent;
     FOnDownloading: TDownloadingEvent;
     FOnDownloadEnd: TNotifyEvent;
+    FOnError: TStringEvent;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -28,6 +29,7 @@ type
   published
     property CurrentSize : integer read FCurrentSize;
     property FileSize : integer read FFileSize;
+    property OnError : TStringEvent read FOnError write FOnError;
     property OnDownloadBegin : TNotifyEvent read FOnDownloadBegin write FOnDownloadBegin;
     property OnDownloading : TDownloadingEvent read FOnDownloading write FOnDownloading;
     property OnDownloadEnd : TNotifyEvent read FOnDownloadEnd write FOnDownloadEnd;
@@ -218,6 +220,7 @@ begin
   except
     On E : Exception do begin
       FStoped := true;
+      if Assigned(FOnError) then FOnError(Self, E.Message);
       Trace( Format('TWebFile.Download - %s', [E.Message]) );
     end;
   end;
