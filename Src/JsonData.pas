@@ -4,12 +4,13 @@ interface
 
 uses
   DebugTools,
-  System.JSON,
+  System.JSON, System.Generics.Collections,
   Windows, Classes, SysUtils;
 
 type
-  TJsonValueClass = class of TJsonValue;
-  TJsonValueHelper = class helper for TJsonValue
+  TJSONValueClass = class of TJSONValue;
+
+  TJSONValueHelper = class helper for TJSONValue
   private
     function GetValueAsBoolean(AName: string): boolean;
     function GetValueAsString(AName: string): string;
@@ -20,13 +21,13 @@ type
     procedure SetValueAsJson(AName: string; const Value: TJSONValue);
     procedure SetValueAsString(AName: string; const Value: string);
   public
-    class function LoadFromFile(AFileName:string):TJSONValue;
-    procedure SaveToFile(AFileName:string);
+    class function LoadFromFile(AFileName: string): TJSONValue;
+    procedure SaveToFile(AFileName: string);
   public
-    property ValueAsJson[AName:string]:TJSONValue read GetValueAsJson write SetValueAsJson;
-    property ValueAsInt[AName:string]:integer read GetValueAsInt write SetValueAsInt;
-    property ValueAsString[AName:string]:string read GetValueAsString write SetValueAsString;
-    property ValueAsBoolean[AName:string]:boolean read GetValueAsBoolean write SetValueAsBoolean;
+    property ValueAsJson[AName: string]: TJSONValue read GetValueAsJson write SetValueAsJson;
+    property ValueAsInt[AName: string]: integer read GetValueAsInt write SetValueAsInt;
+    property ValueAsString[AName: string]: string read GetValueAsString write SetValueAsString;
+    property ValueAsBoolean[AName: string]: boolean read GetValueAsBoolean write SetValueAsBoolean;
   end;
 
   TJsonData = class
@@ -34,11 +35,11 @@ type
     FJSONObject: TJSONObject;
     function GetText: string;
     procedure SetText(const Value: string);
-    function GetBooleans(AName: string): Boolean;
+    function GetBooleans(AName: string): boolean;
     function GetDoubles(AName: string): double;
     function GetInt64s(AName: string): int64;
     function GetIntegers(AName: string): integer;
-    procedure SetBooleans(AName: string; const Value: Boolean);
+    procedure SetBooleans(AName: string; const Value: boolean);
     procedure SetDoubles(AName: string; const Value: double);
     procedure SetInt64s(AName: string; const Value: int64);
     procedure SetIntegers(AName: string; const Value: integer);
@@ -48,46 +49,46 @@ type
     function GetNames(Index: integer): string;
   public
     constructor Create; overload;
-    constructor Create(AJsonObject:TJSONObject); overload;
-    constructor Create(AText:string); overload;
+    constructor Create(AJsonObject: TJSONObject); overload;
+    constructor Create(AText: string); overload;
     destructor Destroy; override;
 
-    procedure LoadFromFile(AFileName:string);
-    procedure SaveToFile(AFileName:string);
+    procedure LoadFromFile(AFileName: string);
+    procedure SaveToFile(AFileName: string);
 
-    function GetJsonData(const AName:string):TJsonData; overload;
-    function GetJsonData(AIndex:integer):TJsonData; overload;
+    function GetJsonData(const AName: string): TJsonData; overload;
+    function GetJsonData(AIndex: integer): TJsonData; overload;
 
-    function GetJsonText(const AName:string):string; overload;
-    function GetJsonText(AIndex:integer):string; overload;
+    function GetJsonText(const AName: string): string; overload;
+    function GetJsonText(AIndex: integer): string; overload;
 
-    procedure SetJsonData(AName,AText:string);
+    procedure SetJsonData(AName, AText: string);
 
-    procedure Delete(AIndex:integer); overload;
-    procedure Delete(AName:string); overload;
+    procedure Delete(AIndex: integer); overload;
+    procedure Delete(AName: string); overload;
 
-    property Names[Index : integer] : string read GetNames;
-    property Values[AName:string] : string read GetValues write SetValues;
+    property Names[Index: integer]: string read GetNames;
+    property Values[AName: string]: string read GetValues write SetValues;
 
-    property Integers[AName:string] : integer read GetIntegers write SetIntegers;
-    property Int64s[AName:string] : int64 read GetInt64s write SetInt64s;
-    property Doubles[AName:string] : double read GetDoubles write SetDoubles;
-    property Booleans[AName:string] : Boolean read GetBooleans write SetBooleans;
+    property Integers[AName: string]: integer read GetIntegers write SetIntegers;
+    property Int64s[AName: string]: int64 read GetInt64s write SetInt64s;
+    property Doubles[AName: string]: double read GetDoubles write SetDoubles;
+    property Booleans[AName: string]: boolean read GetBooleans write SetBooleans;
 
-    property Count : integer read GetCount;
-    property Text : string read GetText write SetText;
+    property Count: integer read GetCount;
+    property Text: string read GetText write SetText;
   end;
 
-procedure StringsToJson(const AText,ADelimiter:string; const AJsonData:TJsonData); overload;
-function StringsToJson(const AText,ADelimiter:string):string; overload;
+procedure StringsToJson(const AText, ADelimiter: string; const AJsonData: TJsonData); overload;
+function StringsToJson(const AText, ADelimiter: string): string; overload;
 
 implementation
 
-procedure StringsToJson(const AText,ADelimiter:string; const AJsonData:TJsonData);
+procedure StringsToJson(const AText, ADelimiter: string; const AJsonData: TJsonData);
 var
-  i: Integer;
-  lines : TStringList;
-  name, value : string;
+  i: integer;
+  lines: TStringList;
+  name, Value: string;
 begin
   lines := TStringList.Create;
   try
@@ -95,35 +96,37 @@ begin
     lines.Delimiter := '/';
     lines.DelimitedText := AText;
 
-    for i := 0 to lines.Count-1 do begin
-      if Pos('=', lines[i]) = 0  then Continue;
+    for i := 0 to lines.Count - 1 do
+    begin
+      if Pos('=', lines[i]) = 0 then
+        Continue;
 
       name := lines.Names[i];
-      value := lines.ValueFromIndex[i];
+      Value := lines.ValueFromIndex[i];
 
       // TODO: escape 문자가 오류를 일으키고 있어서 / 로 치환해서 임시 처리
-      value := StringReplace(value, '\', '/', [rfReplaceAll]);
+      Value := StringReplace(Value, '\', '/', [rfReplaceAll]);
 
-      AJsonData.Values[name] := value;
+      AJsonData.Values[name] := Value;
 
-      {$IFDEF DEBUG}
-//      Trace( Format('name: %s, value: %s - %s', [name, value, AJsonData.Text]) );
-      {$ENDIF}
+{$IFDEF DEBUG}
+      // Trace( Format('name: %s, value: %s - %s', [name, value, AJsonData.Text]) );
+{$ENDIF}
     end;
   finally
     lines.Free;
   end;
 end;
 
-function StringsToJson(const AText,ADelimiter:string):string;
+function StringsToJson(const AText, ADelimiter: string): string;
 var
-  JsonData : TJsonData;
+  JsonData: TJsonData;
 begin
   Result := '';
 
   JsonData := TJsonData.Create;
   try
-    StringsToJson(AText,ADelimiter, JsonData);
+    StringsToJson(AText, ADelimiter, JsonData);
     Result := JsonData.Text;
   finally
     JsonData.Free;
@@ -163,20 +166,23 @@ end;
 
 destructor TJsonData.Destroy;
 begin
-  if FJSONObject <> nil then FreeAndNil(FJSONObject);
+  if FJSONObject <> nil then
+    FreeAndNil(FJSONObject);
 
   inherited;
 end;
 
-function TJsonData.GetBooleans(AName: string): Boolean;
+function TJsonData.GetBooleans(AName: string): boolean;
 var
   Pair: TJSONPair;
 begin
   Result := False;
-  if FJSONObject = nil then Exit;
+  if FJSONObject = nil then
+    Exit;
 
   Pair := FJSONObject.Get(AName);
-  if Pair <> nil then Result := TJSONNumber(Pair.JsonValue).AsInt = 1;
+  if Pair <> nil then
+    Result := TJSONNumber(Pair.JSONValue).AsInt = 1;
 end;
 
 function TJsonData.GetDoubles(AName: string): double;
@@ -184,10 +190,12 @@ var
   Pair: TJSONPair;
 begin
   Result := 0;
-  if FJSONObject = nil then Exit;
+  if FJSONObject = nil then
+    Exit;
 
   Pair := FJSONObject.Get(AName);
-  if Pair <> nil then Result := TJSONNumber(Pair.JsonValue).AsDouble;
+  if Pair <> nil then
+    Result := TJSONNumber(Pair.JSONValue).AsDouble;
 end;
 
 function TJsonData.GetInt64s(AName: string): int64;
@@ -195,10 +203,12 @@ var
   Pair: TJSONPair;
 begin
   Result := 0;
-  if FJSONObject = nil then Exit;
+  if FJSONObject = nil then
+    Exit;
 
   Pair := FJSONObject.Get(AName);
-  if Pair <> nil then Result := TJSONNumber(Pair.JsonValue).AsInt64;
+  if Pair <> nil then
+    Result := TJSONNumber(Pair.JSONValue).AsInt64;
 end;
 
 function TJsonData.GetIntegers(AName: string): integer;
@@ -206,10 +216,12 @@ var
   Pair: TJSONPair;
 begin
   Result := 0;
-  if FJSONObject = nil then Exit;
+  if FJSONObject = nil then
+    Exit;
 
   Pair := FJSONObject.Get(AName);
-  if Pair <> nil then Result := TJSONNumber(Pair.JsonValue).AsInt;
+  if Pair <> nil then
+    Result := TJSONNumber(Pair.JSONValue).AsInt;
 end;
 
 function TJsonData.GetJsonData(const AName: string): TJsonData;
@@ -217,15 +229,17 @@ var
   Pair: TJSONPair;
 begin
   Result := TJsonData.Create;
-  if FJSONObject = nil then Exit;
+  if FJSONObject = nil then
+    Exit;
 
   Pair := FJSONObject.Get(AName);
-  if Pair <> nil then Result.Text := TJSONObject(Pair.JsonValue).ToString;
+  if Pair <> nil then
+    Result.Text := TJSONObject(Pair.JSONValue).ToString;
 end;
 
-function TJsonData.GetJsonText(const AName:string):string;
+function TJsonData.GetJsonText(const AName: string): string;
 var
-  JsonData : TJsonData;
+  JsonData: TJsonData;
 begin
   JsonData := GetJsonData(AName);
   try
@@ -238,7 +252,8 @@ end;
 function TJsonData.GetNames(Index: integer): string;
 begin
   Result := '';
-  if FJSONObject = nil then Exit;
+  if FJSONObject = nil then
+    Exit;
 
   Result := TJSONPair(FJSONObject.Pairs[Index]).JsonString.Value;
 end;
@@ -246,7 +261,8 @@ end;
 function TJsonData.GetCount: integer;
 begin
   Result := 0;
-  if FJSONObject = nil then Exit;
+  if FJSONObject = nil then
+    Exit;
 
   Result := FJSONObject.Count
 end;
@@ -254,7 +270,8 @@ end;
 function TJsonData.GetText: string;
 begin
   Result := '';
-  if FJSONObject = nil then Exit;
+  if FJSONObject = nil then
+    Exit;
 
   Result := FJSONObject.ToString
 end;
@@ -265,25 +282,31 @@ var
 begin
   Result := '';
   try
-    if FJSONObject = nil then Exit;
+    if FJSONObject = nil then
+      Exit;
 
     Pair := FJSONObject.Get(AName);
-    if (Pair <> nil) and (Pair.JsonValue <> nil) then Result := Pair.JsonValue.Value;
+    if (Pair <> nil) and (Pair.JSONValue <> nil) then
+      Result := Pair.JSONValue.Value;
   except
-    on E : Exception do Trace( Format('TJsonData.GetValues - %s', [E.Message]) );
+    on E: Exception do
+      Trace(Format('TJsonData.GetValues - %s', [E.Message]));
   end;
 end;
 
 procedure TJsonData.LoadFromFile(AFileName: string);
 var
-  List : TStringList;
+  List: TStringList;
 begin
   List := TStringList.Create;
   try
-    if FileExists(AFileName) then begin
+    if FileExists(AFileName) then
+    begin
       List.LoadFromFile(AFileName);
       SetText(List.Text);
-    end else begin
+    end
+    else
+    begin
       SetText('');
     end;
   finally
@@ -293,7 +316,7 @@ end;
 
 procedure TJsonData.SaveToFile(AFileName: string);
 var
-  List : TStringList;
+  List: TStringList;
 begin
   List := TStringList.Create;
   try
@@ -304,299 +327,292 @@ begin
   end;
 end;
 
-procedure TJsonData.SetBooleans(AName: string; const Value: Boolean);
+procedure TJsonData.SetBooleans(AName: string; const Value: boolean);
 var
   Pair: TJSONPair;
 begin
-  if FJSONObject = nil then begin
+  if FJSONObject = nil then
+  begin
     FJSONObject := TJSONObject.Create;
-    FJSONObject.AddPair(AName, TJSONNumber.Create(Integer(Value)));
+    FJSONObject.AddPair(AName, TJSONNumber.Create(integer(Value)));
     Exit;
   end;
 
-  Pair := FJSONObject.Get(AName);
-  if Pair = nil then begin
-    FJSONObject.AddPair(AName, TJSONNumber.Create(Integer(Value)));
-  end else begin
-    if Pair.JsonValue <> nil then Pair.JsonValue.Free;
-    Pair.JsonValue := TJSONNumber.Create(Integer(Value));
-  end;
+  Pair := FJSONObject.RemovePair(AName);
+  if Assigned(Pair) then
+    FreeAndNil(Pair);
+  FJSONObject.AddPair(AName, TJSONNumber.Create(integer(Value)));
 end;
 
 procedure TJsonData.SetDoubles(AName: string; const Value: double);
 var
   Pair: TJSONPair;
 begin
-  if FJSONObject = nil then begin
+  if FJSONObject = nil then
+  begin
     FJSONObject := TJSONObject.Create;
     FJSONObject.AddPair(AName, TJSONNumber.Create(Value));
     Exit;
   end;
 
-  Pair := FJSONObject.Get(AName);
-  if Pair = nil then begin
-    FJSONObject.AddPair(AName, TJSONNumber.Create(Value));
-  end else begin
-    if Pair.JsonValue <> nil then Pair.JsonValue.Free;
-    Pair.JsonValue := TJSONNumber.Create(Value);
-  end;
+  Pair := FJSONObject.RemovePair(AName);
+  if Assigned(Pair) then
+    FreeAndNil(Pair);
+  FJSONObject.AddPair(AName, TJSONNumber.Create(Value));
 end;
 
 procedure TJsonData.SetInt64s(AName: string; const Value: int64);
 var
   Pair: TJSONPair;
 begin
-  if FJSONObject = nil then begin
+  if FJSONObject = nil then
+  begin
     FJSONObject := TJSONObject.Create;
     FJSONObject.AddPair(AName, TJSONNumber.Create(Value));
     Exit;
   end;
 
-  Pair := FJSONObject.Get(AName);
-  if Pair = nil then begin
-    FJSONObject.AddPair(AName, TJSONNumber.Create(Value));
-  end else begin
-    if Pair.JsonValue <> nil then Pair.JsonValue.Free;
-    Pair.JsonValue := TJSONNumber.Create(Value);
-  end;
+  Pair := FJSONObject.RemovePair(AName);
+  if Assigned(Pair) then
+    FreeAndNil(Pair);
+  FJSONObject.AddPair(AName, TJSONNumber.Create(Value));
 end;
 
 procedure TJsonData.SetIntegers(AName: string; const Value: integer);
 var
   Pair: TJSONPair;
 begin
-  if FJSONObject = nil then begin
+  if FJSONObject = nil then
+  begin
     FJSONObject := TJSONObject.Create;
     FJSONObject.AddPair(AName, TJSONNumber.Create(Value));
     Exit;
   end;
 
-  Pair := FJSONObject.Get(AName);
-  if Pair = nil then begin
-    FJSONObject.AddPair(AName, TJSONNumber.Create(Value));
-  end else begin
-    if Pair.JsonValue <> nil then Pair.JsonValue.Free;
-    Pair.JsonValue := TJSONNumber.Create(Value);
-  end;
+  Pair := FJSONObject.RemovePair(AName);
+  if Assigned(Pair) then
+    FreeAndNil(Pair);
+  FJSONObject.AddPair(AName, TJSONNumber.Create(Value));
 end;
 
-procedure TJsonData.SetJsonData(AName,AText:string);
+procedure TJsonData.SetJsonData(AName, AText: string);
 var
   Pair: TJSONPair;
 begin
-  if FJSONObject = nil then begin
+  if FJSONObject = nil then
+  begin
     FJSONObject := TJSONObject.Create;
     FJSONObject.AddPair(AName, TJSONObject(TJSONObject.ParseJSONValue(AText)));
-  end else begin
-    Pair := FJSONObject.Get(AName);
-    if Pair = nil then begin
-      FJSONObject.AddPair(AName, TJSONObject(TJSONObject.ParseJSONValue(AText)));
-    end else begin
-      if Pair.JsonValue <> nil then Pair.JsonValue.Free;
-      Pair.JsonValue := TJSONObject(TJSONObject.ParseJSONValue(AText));
-    end;
+    Exit;
   end;
+
+  Pair := FJSONObject.RemovePair(AName);
+  if Assigned(Pair) then
+    FreeAndNil(Pair);
+  FJSONObject.AddPair(AName, TJSONObject(TJSONObject.ParseJSONValue(AText)));
 end;
 
 procedure TJsonData.SetText(const Value: string);
-var
-  OldObject : TJSONObject;
 begin
-  if FJSONObject <> nil then OldObject := FJSONObject
-  else OldObject := nil;
-
+  if Assigned(FJSONObject) then
+    FJSONObject.Free;
   FJSONObject := TJSONObject(TJSONObject.ParseJSONValue(Value));
-
-  if OldObject <> nil then FreeAndNil(OldObject);
 end;
 
 procedure TJsonData.SetValues(AName: string; const Value: string);
 var
   Pair: TJSONPair;
 begin
-  if FJSONObject = nil then begin
+  if FJSONObject = nil then
+  begin
     FJSONObject := TJSONObject.Create;
     FJSONObject.AddPair(AName, Value);
     Exit;
   end;
 
-  Pair := FJSONObject.Get(AName);
-  if Pair = nil then begin
-    FJSONObject.AddPair(AName, Value);
-  end else begin
-    if Pair.JsonValue <> nil then Pair.JsonValue.Free;
-    Pair.JsonValue := TJSONString.Create(Value);
-  end;
+  Pair := FJSONObject.RemovePair(AName);
+  if Assigned(Pair) then
+    FreeAndNil(Pair);
+  FJSONObject.AddPair(AName, TJSONString.Create(Value));
 end;
 
-{ TJsonValueHelper }
+{ TJSONValueHelper }
 
-function TJsonValueHelper.GetValueAsJson(AName: string): TJSONValue;
+function TJSONValueHelper.GetValueAsJson(AName: string): TJSONValue;
 var
-  pair:TJSONPair;
+  Pair: TJSONPair;
 begin
-  Result:= nil;
-  if Self is TJSONObject then begin
+  Result := nil;
+  if Self is TJSONObject then
+  begin
     try
-      pair:= TJSONObject(Self).Get(AName);
-      if pair <> nil then
+      Pair := TJSONObject(Self).Get(AName);
+      if Pair <> nil then
       begin
-        Result:= pair.JsonValue;
+        Result := Pair.JSONValue;
       end;
     except
     end;
   end;
 end;
 
-function TJsonValueHelper.GetValueAsBoolean(AName: string): boolean;
+function TJSONValueHelper.GetValueAsBoolean(AName: string): boolean;
 var
-  pair:TJSONPair;
+  Pair: TJSONPair;
 begin
-  Result:= False;
-  if Self is TJSONObject then begin
+  Result := False;
+  if Self is TJSONObject then
+  begin
     try
-      pair:= TJSONObject(Self).Get(AName);
-      if pair <> nil then
+      Pair := TJSONObject(Self).Get(AName);
+      if Pair <> nil then
       begin
-        if  pair.JsonValue is TJSONNumber  then
-          Result:= TJSONNumber(pair.JsonValue).AsInt = 1
+        if Pair.JSONValue is TJSONNumber then
+          Result := TJSONNumber(Pair.JSONValue).AsInt = 1
         else
-          Result:= pair.JsonValue is TJSONTrue;
+          Result := Pair.JSONValue is TJSONTrue;
       end;
     except
     end;
   end;
 end;
 
-function TJsonValueHelper.GetValueAsInt(AName: string): integer;
+function TJSONValueHelper.GetValueAsInt(AName: string): integer;
 var
-  pair:TJSONPair;
+  Pair: TJSONPair;
 begin
-  Result:= 0;
+  Result := 0;
 
-  if Self is TJSONObject then begin
+  if Self is TJSONObject then
+  begin
     try
-      pair:= TJSONObject(Self).Get(AName);
-      if (pair <> nil) then Result:= StrToIntDef(pair.JsonValue.Value, 0);
+      Pair := TJSONObject(Self).Get(AName);
+      if (Pair <> nil) then
+        Result := StrToIntDef(Pair.JSONValue.Value, 0);
     except
     end;
   end;
 end;
 
-function TJsonValueHelper.GetValueAsString(AName: string): string;
+function TJSONValueHelper.GetValueAsString(AName: string): string;
 var
-  pair:TJSONPair;
+  Pair: TJSONPair;
 begin
-  Result:= '';
+  Result := '';
 
-  if Self is TJSONObject then begin
+  if Self is TJSONObject then
+  begin
     try
-      pair:= TJSONObject(Self).Get(AName);
-      if pair <> nil then Result:= pair.JsonValue.Value;
+      Pair := TJSONObject(Self).Get(AName);
+      if Pair <> nil then
+        Result := Pair.JSONValue.Value;
     except
     end;
   end;
 end;
 
-class function TJsonValueHelper.LoadFromFile(AFileName: string): TJSONValue;
+class function TJSONValueHelper.LoadFromFile(AFileName: string): TJSONValue;
 var
   Buffer: TStringList;
 begin
-  Result:= nil;
+  Result := nil;
 
   if FileExists(AFileName) then
   begin
-    Buffer:= TStringList.Create;
+    Buffer := TStringList.Create;
     try
       Buffer.LoadFromFile(AFileName);
-      Result:= TJSONObject.ParseJSONValue(Buffer.GetText);
+      Result := TJSONObject.ParseJSONValue(Buffer.GetText);
     finally
       Buffer.Free;
     end;
   end;
 end;
 
-procedure TJsonValueHelper.SaveToFile(AFileName: string);
+procedure TJSONValueHelper.SaveToFile(AFileName: string);
 var
   Buffer: TStringList;
 begin
-  Buffer:= TStringList.Create;
+  Buffer := TStringList.Create;
   try
-    Buffer.Text:= ToString;
+    Buffer.Text := ToString;
     Buffer.SaveToFile(AFileName);
   finally
     Buffer.Free;
   end;
 end;
 
-procedure TJsonValueHelper.SetValueAsBoolean(AName: string;
-  const Value: boolean);
+procedure TJSONValueHelper.SetValueAsBoolean(AName: string; const Value: boolean);
 var
   Pair: TJSONPair;
-  NewValueClass: TJsonValueClass;
+  NewValueClass: TJSONValueClass;
 begin
   if Self is TJSONObject then
   begin
-    if Value then NewValueClass:= TJSONTrue
-             else NewValueClass:= TJSONFalse;
+    if Value then
+      NewValueClass := TJSONTrue
+    else
+      NewValueClass := TJSONFalse;
 
     with TJSONObject(Self) do
     begin
-      Pair:= RemovePair(AName);
-      if Pair <> nil then Pair.Free;
+      Pair := RemovePair(AName);
+      if Pair <> nil then
+        Pair.Free;
       AddPair(AName, NewValueClass.Create);
     end;
   end;
 end;
 
-procedure TJsonValueHelper.SetValueAsInt(AName: string; const Value: integer);
+procedure TJSONValueHelper.SetValueAsInt(AName: string; const Value: integer);
 var
   Pair: TJSONPair;
   NewValue: TJSONValue;
 begin
   if Self is TJSONObject then
   begin
-    NewValue:= TJSONNumber.Create(Value);
+    NewValue := TJSONNumber.Create(Value);
     with TJSONObject(Self) do
     begin
-      Pair:= RemovePair(AName);
-      if Pair <> nil then Pair.Free;
+      Pair := RemovePair(AName);
+      if Pair <> nil then
+        Pair.Free;
       AddPair(AName, NewValue);
     end;
   end;
 end;
 
-procedure TJsonValueHelper.SetValueAsJson(AName: string;
-  const Value: TJSONValue);
+procedure TJSONValueHelper.SetValueAsJson(AName: string; const Value: TJSONValue);
 var
   Pair: TJSONPair;
   NewValue: TJSONValue;
 begin
   if Self is TJSONObject then
   begin
-    NewValue:= Value;
+    NewValue := Value;
     with TJSONObject(Self) do
     begin
-      Pair:= RemovePair(AName);
-      if Pair <> nil then Pair.Free;
+      Pair := RemovePair(AName);
+      if Pair <> nil then
+        Pair.Free;
       AddPair(AName, NewValue);
     end;
   end;
 end;
 
-procedure TJsonValueHelper.SetValueAsString(AName: string;
-  const Value: string);
+procedure TJSONValueHelper.SetValueAsString(AName: string; const Value: string);
 var
   Pair: TJSONPair;
   NewValue: TJSONValue;
 begin
   if Self is TJSONObject then
   begin
-    NewValue:= TJSONString.Create( Value );
+    NewValue := TJSONString.Create(Value);
     with TJSONObject(Self) do
     begin
-      Pair:= RemovePair(AName);
-      if Pair <> nil then Pair.Free;
+      Pair := RemovePair(AName);
+      if Pair <> nil then
+        Pair.Free;
       AddPair(AName, NewValue);
     end;
   end;
@@ -607,15 +623,17 @@ var
   Pair: TJSONPair;
 begin
   Result := TJsonData.Create;
-  if FJSONObject = nil then Exit;
+  if FJSONObject = nil then
+    Exit;
 
   Pair := FJSONObject.Pairs[AIndex];
-  if Pair <> nil then Result.Text := TJSONObject(Pair.JsonValue).ToString;
+  if Pair <> nil then
+    Result.Text := TJSONObject(Pair.JSONValue).ToString;
 end;
 
 function TJsonData.GetJsonText(AIndex: integer): string;
 var
-  JsonData : TJsonData;
+  JsonData: TJsonData;
 begin
   JsonData := GetJsonData(AIndex);
   try
