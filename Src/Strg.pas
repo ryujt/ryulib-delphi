@@ -6,7 +6,22 @@ uses
   ShLwApi,
   Windows, SysUtils, Classes;
 
+{** AText에서 ABorder를 찾아서 그 전까지 복사한다.
+  @param AText 원본 문자열
+  @param ABorder 복사를 할 경계선(문자열)
+  @param AIgnoreCase ABorder를 찾을 때 대소 문자를 구별할 것인가
+  @return ABorder가 없으면 null 문자열을 리턴. 있으면 그 이전까지 복사
+*}
+function CopyLeft(const AText,ABorder:string; AIgnoreCase:boolean=false):string;
+
+{** AText를 ADelimiter로 잘라서 AIndex번째 문자열을 리턴한다.
+  @param AText 원본 문자열
+  @param ADelimiter 문자열을 자를 경계선 (문자)
+  @param AIndex 잘라진 문자열 중 가져와야 할 순서 (0번부터 시작)
+  @return AText를 ADelimiter로 잘라서 AIndex번째 문자열
+*}
 function TextInLines(const AText:string; ADelimiter:char; AIndex:integer):string;
+
 function LastString(const AText:string; ACount:integer):string;
 function StrPos(SubStr,stText:string; IgnoreCase:boolean=true):integer;
 function CharString(Ch:Char; Length:integer):string;
@@ -26,7 +41,7 @@ Procedure DeleteSpcRight(var Strg:String);
 function  SetLengthTo(Text,stEnd:string):string;
 function  SetLengthBefore(Text,stEnd:string):string;
 
-// 한글 문자열을 복사한다.  잘림방지
+/// 한글 문자열을 복사한다.  잘림방지
 Function  CopyHan(St:String; Count:Integer):String;
 Function  CopyHanStr(St:String; Start,No:Integer):String;
 
@@ -57,6 +72,24 @@ function MemoryStr(AValue:int64):string;
 function ByteValueToSizeString(Value:Int64):string;
 
 Implementation
+
+function CopyLeft(const AText,ABorder:string; AIgnoreCase:boolean):string;
+var
+  iIndex : integer;
+begin
+  if AIgnoreCase then begin
+    iIndex := Pos(LowerCase(ABorder), LowerCase(AText));
+  end else begin
+    iIndex := Pos(ABorder, AText);
+  end;
+
+  if iIndex <= 0 then begin
+    Result := '';
+    Exit;
+  end;
+
+  Result := Copy(AText, 1, iIndex-1);
+end;
 
 function TextInLines(const AText:string; ADelimiter:char; AIndex:integer):string;
 var
