@@ -18,7 +18,7 @@ function CopyLeft(const AText,ABorder:string; AIgnoreCase:boolean=false):string;
   @param AText 원본 문자열
   @param ADelimiter 문자열을 자를 경계선 (문자)
   @param AIndex 잘라진 문자열 중 가져와야 할 순서 (0번부터 시작)
-  @return AText를 ADelimiter로 잘라서 AIndex번째 문자열
+  @return AText를 ADelimiter로 자른 AIndex번째 문자열
 *}
 function TextInLines(const AText:string; ADelimiter:char; AIndex:integer):string;
 
