@@ -31,6 +31,10 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure TerminateNow;
+    procedure Terminate;
+    procedure TerminateAndWait;
+
     procedure Add(ATask:integer); overload;
     procedure Add(AText:string); overload;
     procedure Add(ATask:integer; AText:string); overload;
@@ -109,6 +113,21 @@ begin
     task := FQueue.Pop;
     if Assigned(FOnTask) then FOnTask(Self, task.FTask, task.FText, task.FData, task.FSize, task.FTag);
   end;
+end;
+
+procedure TWorker.Terminate;
+begin
+  FSimpleThread.Terminate;
+end;
+
+procedure TWorker.TerminateAndWait;
+begin
+  FSimpleThread.Terminate(INFINITE);
+end;
+
+procedure TWorker.TerminateNow;
+begin
+  FSimpleThread.TerminateNow;
 end;
 
 end.

@@ -131,8 +131,7 @@ procedure TMemoryPool64.do_ResetIndex;
 var
   iIndex, iDiv, iMod : int64;
 begin
-  iIndex := 0;
-  InterlockedCompareExchange64(iIndex, FIndex, 0);
+  iIndex := FIndex;
 
   if iIndex > (FPoolSize  * 2) then begin
     iDiv := (iIndex div POOL_UNIT_SIZE);
@@ -145,7 +144,7 @@ begin
     InterlockedCompareExchange64(FIndex, (iDiv * POOL_UNIT_SIZE) + iMod, iIndex);
 
     {$IFDEF DEBUG}
-    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iMod: %d, iIndex: %d', [FIndex, iMod, iIndex]) );
+//    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iMod: %d, iIndex: %d', [FIndex, iMod, iIndex]) );
     {$ENDIF}
   end;
 end;
@@ -225,7 +224,7 @@ begin
     InterlockedCompareExchange(FIndex, (iDiv * POOL_UNIT_SIZE) + iMod, iIndex);
 
     {$IFDEF DEBUG}
-    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iMod: %d, iIndex: %d', [FIndex, iMod, iIndex]) );
+//    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iMod: %d, iIndex: %d', [FIndex, iMod, iIndex]) );
     {$ENDIF}
   end;
 end;

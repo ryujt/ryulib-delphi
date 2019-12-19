@@ -26,7 +26,6 @@ type
     procedure Clear;
     procedure Push(AItem:T);
     function Peek:T;
-    function Pop():boolean; overload;
     function Pop(var AItem:T):boolean; overload;
 
     procedure Iterate(AProcedure:TIterateProcedure<T>); overload;
@@ -151,27 +150,6 @@ begin
      end else begin
        Node := FEmpty;
        AItem := Node.Item;
-     end;
-  finally
-    FCS.Release;
-  end;
-end;
-
-function TThreadQueue<T>.Pop: boolean;
-var
-  Node : TNode<T>;
-begin
-  Result := false;
-
-  FCS.Acquire;
-  try
-     Node := FHead;
-     Result := Node <> nil;
-
-     if Result then begin
-       FHead := FHead.Next;
-       FCount := FCount - 1;
-       Node.Free;
      end;
   finally
     FCS.Release;
