@@ -39,6 +39,8 @@ type
     procedure Terminate;
     procedure TerminateAndWait;
 
+    procedure Sleep(ATimeOut:DWORD);
+
     procedure Start;
     procedure Stop;
 
@@ -71,27 +73,32 @@ end;
 procedure TScheduler.Add(ATask:integer; AText: string);
 begin
   FQueue.Push(TTaskOfScheduler.Create(ATask, AText, nil, 0, 0));
+  FSimpleThread.WakeUp;
 end;
 
 procedure TScheduler.Add(ATask: integer);
 begin
   FQueue.Push(TTaskOfScheduler.Create(ATask, '', nil, 0, 0));
+  FSimpleThread.WakeUp;
 end;
 
 procedure TScheduler.Add(ATask: integer; AText: string; AData: pointer; ASize,
   ATag: integer);
 begin
   FQueue.Push(TTaskOfScheduler.Create(ATask, AText, AData, ASize, ATag));
+  FSimpleThread.WakeUp;
 end;
 
 procedure TScheduler.Add(AText: string);
 begin
   FQueue.Push(TTaskOfScheduler.Create(0, AText, nil, 0, 0));
+  FSimpleThread.WakeUp;
 end;
 
 procedure TScheduler.Add(ATask: integer; AData: pointer);
 begin
   FQueue.Push(TTaskOfScheduler.Create(ATask, '', AData, 0, 0));
+  FSimpleThread.WakeUp;
 end;
 
 constructor TScheduler.Create;
@@ -143,6 +150,11 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TScheduler.Sleep(ATimeOut: DWORD);
+begin
+  FSimpleThread.Sleep(ATimeOut);
 end;
 
 procedure TScheduler.Start;
