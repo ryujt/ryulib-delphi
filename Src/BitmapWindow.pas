@@ -673,6 +673,10 @@ end;
 procedure TStateNull.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
+  if GetBitmapWindow.Cursor = crDefault then begin
+    ReleaseCapture;
+    GetBitmapWindow.TargetControl.Perform(WM_SysCommand, $F012, 0);
+  end;
 end;
 
 procedure TStateNull.MouseMove(Shift: TShiftState; X, Y: Integer);
