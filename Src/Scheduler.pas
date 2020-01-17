@@ -143,11 +143,10 @@ begin
     end;
 
     if FIsStarted then begin
-      if Assigned(FOnRepeat) then begin
-        FOnRepeat(Self);
-      end else begin
-        ASimpleThread.Sleep(1);
-      end;
+      if Assigned(FOnRepeat) then FOnRepeat(Self)
+      else ASimpleThread.Sleep(1);
+    end else begin
+      ASimpleThread.Sleep(1);
     end;
   end;
 end;
