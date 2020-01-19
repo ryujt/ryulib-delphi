@@ -35,8 +35,8 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    procedure TerminateNow;
     procedure Terminate;
+    procedure TerminateNow;
     procedure TerminateAndWait;
 
     procedure Sleep(ATimeOut:DWORD);
@@ -114,10 +114,7 @@ end;
 
 destructor TScheduler.Destroy;
 begin
-  FSimpleThread.TerminateNow;
-
-  FreeAndNil(FQueue);
-  FreeAndNil(FSimpleThread);
+  TerminateNow;
 
   inherited;
 end;
@@ -149,6 +146,9 @@ begin
       ASimpleThread.Sleep(1);
     end;
   end;
+
+  FreeAndNil(FQueue);
+  FreeAndNil(FSimpleThread);
 end;
 
 procedure TScheduler.Sleep(ATimeOut: DWORD);
@@ -173,7 +173,7 @@ end;
 
 procedure TScheduler.TerminateAndWait;
 begin
-  FSimpleThread.Terminate(INFINITE);
+  FSimpleThread.TerminateAndWait;
 end;
 
 procedure TScheduler.TerminateNow;

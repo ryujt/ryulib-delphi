@@ -49,10 +49,10 @@ type
     constructor Create(AName:string; AStackSize:integer); overload;
     constructor Create(AName:string; AStackSize:integer; AEventHandle:TSimpleThreadEvent); overload;
 
-    procedure TerminateNow;
-
     procedure Terminate; overload;
     procedure Terminate(ATimeout:integer); overload;
+    procedure TerminateNow;
+    procedure TerminateAndWait;
 
     procedure Sleep(ATimeOut:DWORD);
     procedure SleepTight;
@@ -229,6 +229,11 @@ begin
 
     if ATimeout > 0 then Sleep(5);
   end;
+end;
+
+procedure TSimpleThread.TerminateAndWait;
+begin
+  Terminate(INFINITE);
 end;
 
 procedure TSimpleThread.TerminateNow;
