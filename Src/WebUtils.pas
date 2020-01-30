@@ -60,7 +60,7 @@ begin
   try
     IdHTTP.Get(AURL, MemoryStream);
     rbstr := PAnsiChar(MemoryStream.Memory);
-    Result := UTF8Decode(rbstr);
+    Result := UTF8ToString(rbstr);
   finally
     IdHTTP.Free;
     MemoryStream.Free;
