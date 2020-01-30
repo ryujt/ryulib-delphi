@@ -5,6 +5,7 @@ object fmMain: TfmMain
   ClientHeight = 320
   ClientWidth = 480
   Color = clBtnFace
+  DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
