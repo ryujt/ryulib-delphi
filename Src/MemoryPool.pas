@@ -8,14 +8,14 @@ uses
 
 const
   /// 메모리 풀 크기가 상수를 넘으면 상수 단위로 페이징 한다.
-  POOL_UNIT_SIZE = 1024 * 1024 * 32;
+  POOL_UNIT_SIZE = 1024 * 1024 * 64;
 
   {*
     경계 조건에서 실수가 있더라도 A.V. 에러가 나지 않도록 여유를 둔다.
     2014.10.04 RyuSocket에서는 2KB 단위로 페이징을 한다.  그보다 작은 수치 때문에 에러가 발생했었다.
     현재의 SAFE_ZONE 메모리 할당하는 최대 크기보다 작으면 곤란해 진다.
   }
-  SAFE_ZONE = 32 * 1024;
+  SAFE_ZONE = 64 * 1024;
 
 type
   TMemoryPool = class abstract
