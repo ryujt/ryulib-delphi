@@ -50,6 +50,7 @@ type
     procedure Add(ATask:integer; AData:pointer); overload;
     procedure Add(ATask:integer; AText:string; AData:pointer; ASize,ATag:integer); overload;
   public
+    property IsStarted : boolean read FIsStarted;
     property OnTask : TWorkerEvent read FOnTask write FOnTask;
     property OnRepeat : TNotifyEvent read FOnRepeat write FOnRepeat;
   end;
