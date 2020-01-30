@@ -101,7 +101,7 @@ begin
   if not Active then Exit;
 
   {$IFDEF DEBUG}
-  Trace('TObserverList.BroadCast - ' + APacket.Text);
+//  Trace('TObserverList.BroadCast - ' + APacket.Text);
   {$ENDIF}
 
   set_LastCommand( APacket.Values['Code'] );
@@ -127,7 +127,7 @@ begin
   if not Active then Exit;
 
   {$IFDEF DEBUG}
-  Trace('TObserverList.AsyncBroadcast - ' + APacket.Text);
+//  Trace('TObserverList.AsyncBroadcast - ' + APacket.Text);
   {$ENDIF}
 
   Packet := TJsonData.Create;
@@ -143,7 +143,7 @@ begin
   if not Active then Exit;
 
   {$IFDEF DEBUG}
-  Trace('TObserverList.AsyncBroadcast - ' + AText);
+//  Trace('TObserverList.AsyncBroadcast - ' + AText);
   {$ENDIF}
 
   Packet := TJsonData.Create;
