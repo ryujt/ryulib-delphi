@@ -8,8 +8,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
 
 const
-  WIDTH = 320;
-  HEIGHT = 240;
+  CAM_WIDTH = 320;
+  CAM_HEIGHT = 240;
 
 type
   TfmMain = class(TForm)
@@ -34,14 +34,16 @@ procedure TfmMain.FormCreate(Sender: TObject);
 begin
   Image.Picture.Bitmap.PixelFormat := pf32bit;
   Image.Picture.Bitmap.Canvas.Brush.Color := clBlack;
-  Image.Picture.Bitmap.Width := WIDTH;
-  Image.Picture.Bitmap.Height := -HEIGHT;
+  Image.Picture.Bitmap.Width := CAM_WIDTH;
+  Image.Picture.Bitmap.Height := -CAM_HEIGHT;
 
   FZip := createVideoZip;
   FUnZip := createVideoUnZip;
 
-  openVideopZip(FZip, WIDTH, HEIGHT);
-  openVideopUnZip(FUnZip, WIDTH, HEIGHT);
+  if openVideopZip(FZip, CAM_WIDTH, CAM_HEIGHT) = false then
+    raise Exception.Create('Error - openVideopZip');
+
+  openVideopUnZip(FUnZip, CAM_WIDTH, CAM_HEIGHT);
 end;
 
 procedure TfmMain.TimerTimer(Sender: TObject);
@@ -50,9 +52,11 @@ begin
 
   Caption := Format('Encode size: %d', [getSize(FZip)]);
 
-  decode(FUnZip, getData(FZip), getSize(FZip));
-  SaveToBitmap(FUnZip, Image.Picture.Bitmap);
-  Image.Invalidate;
+  if getSize(FZip) > 0 then begin
+    decode(FUnZip, getData(FZip), getSize(FZip));
+    SaveToBitmap(FUnZip, Image.Picture.Bitmap);
+    Image.Invalidate;
+  end;
 end;
 
 end.

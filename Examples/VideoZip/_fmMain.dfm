@@ -2,8 +2,8 @@ object fmMain: TfmMain
   Left = 0
   Top = 0
   Caption = 'Demo for TVideoZip'
-  ClientHeight = 281
-  ClientWidth = 384
+  ClientHeight = 320
+  ClientWidth = 480
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,12 +17,10 @@ object fmMain: TfmMain
   object Image: TImage
     Left = 0
     Top = 0
-    Width = 384
-    Height = 281
+    Width = 480
+    Height = 320
     Align = alClient
     Center = True
-    ExplicitLeft = 296
-    ExplicitTop = 168
     ExplicitWidth = 105
     ExplicitHeight = 105
   end
