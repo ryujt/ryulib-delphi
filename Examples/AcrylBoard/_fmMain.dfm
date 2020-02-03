@@ -1,6 +1,8 @@
 object fmMain: TfmMain
   Left = 0
   Top = 0
+  AlphaBlend = True
+  AlphaBlendValue = 25
   Caption = 'fmMain'
   ClientHeight = 586
   ClientWidth = 729

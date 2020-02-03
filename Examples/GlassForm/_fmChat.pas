@@ -3,7 +3,7 @@ unit _fmChat;
 interface
 
 uses
-  ValueList, GlassForm, ChatCanvas,
+  GlassForm, ChatCanvas,
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, jpeg;
 
