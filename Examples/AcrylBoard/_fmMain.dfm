@@ -23,9 +23,6 @@ object fmMain: TfmMain
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = 288
-    ExplicitTop = 264
-    ExplicitWidth = 185
     object btClear: TButton
       Left = 89
       Top = 9

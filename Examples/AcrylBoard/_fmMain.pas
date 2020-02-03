@@ -47,6 +47,7 @@ begin
   FAcrylBoard := TAcrylBoard.Create(Self);
   FAcrylBoard.Align := alClient;
   FAcrylBoard.Parent := Self;
+  FAcrylBoard.CanDraw := true;
 end;
 
 procedure TfmMain.FormDestroy(Sender: TObject);
