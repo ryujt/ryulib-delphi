@@ -15,6 +15,8 @@ type
     FHandle : pointer;
     FOnData: TDataEvent;
     FOnEror: TIntegerEvent;
+    function GetVolume: single;
+    procedure SetVolume(const Value: single);
   public
     constructor Create;
     destructor Destroy; override;
@@ -22,6 +24,7 @@ type
     procedure Start;
     procedure Stop;
   public
+    property Volume : single read GetVolume write SetVolume;
     property OnData : TDataEvent read FOnData write FOnData;
     property OnEror : TIntegerEvent read FOnEror write FOnEror;
   end;
@@ -31,6 +34,8 @@ type
     FHandle : pointer;
     FOnEror: TIntegerEvent;
     function GetAudioUnZipDelayCount: integer;
+    function GetVolume: single;
+    procedure SetVolume(const Value: single);
   public
     constructor Create;
     destructor Destroy; override;
@@ -39,6 +44,7 @@ type
     procedure Skip(ACount:integer);
   public
     property DelayCount : integer read GetAudioUnZipDelayCount;
+    property Volume : single read GetVolume write SetVolume;
     property OnEror : TIntegerEvent read FOnEror write FOnEror;
   end;
 
@@ -52,6 +58,12 @@ procedure startAudioZip(AHandle:pointer);
           cdecl; external 'AudioZip.dll';
 
 procedure stopAudioZip(AHandle:pointer);
+          cdecl; external 'AudioZip.dll';
+
+function  getMicVolume(AHandle:pointer):Single;
+          cdecl; external 'AudioZip.dll';
+
+procedure  setMicVolume(AHandle:pointer; AVolume:Single);
           cdecl; external 'AudioZip.dll';
 
 procedure releaseAudioZip(AHandle:pointer);
@@ -69,8 +81,15 @@ procedure skipAudio(AHandle:pointer; Count:integer);
 function  getDelayCount(AHandle:pointer):integer;
           cdecl; external 'AudioZip.dll';
 
+function  getSpeakerVolume(AHandle:pointer):Single;
+          cdecl; external 'AudioZip.dll';
+
+procedure  setSpeakerVolume(AHandle:pointer; AVolume:Single);
+          cdecl; external 'AudioZip.dll';
+
 procedure releaseAudioUnZip(AHandle:pointer);
           cdecl; external 'AudioZip.dll';
+
 
 implementation
 
@@ -102,6 +121,16 @@ begin
   releaseAudioZip(FHandle);
 
   inherited;
+end;
+
+function TAudioZip.GetVolume: single;
+begin
+  Result := getMicVolume(FHandle);
+end;
+
+procedure TAudioZip.SetVolume(const Value: single);
+begin
+  setMicVolume(FHandle, Value);
 end;
 
 procedure TAudioZip.Start;
@@ -140,9 +169,19 @@ begin
   Result := getDelayCount(FHandle)
 end;
 
+function TAudioUnZip.GetVolume: single;
+begin
+  Result := getSpeakerVolume(FHandle)
+end;
+
 procedure TAudioUnZip.Play(AData: pointer; ASize: integer);
 begin
   playAudio(FHandle, AData, ASize);
+end;
+
+procedure TAudioUnZip.SetVolume(const Value: single);
+begin
+  setSpeakerVolume(FHandle, Value);
 end;
 
 procedure TAudioUnZip.Skip(ACount: integer);
