@@ -55,7 +55,11 @@ type
 
     property Caption;
   published
+    /// 버튼 이미지. 하나의 이미지에 6개의 버튼 상태 이미지를 가로로 붙여서 사용한다.
+    /// [선택된 상태 평상시][선택된 상태 마우스 올라감][선택된 상태이며 버튼 사용 중지됨][선택 안된 상태 평상시][선택 안된 상태 마우스 올라감][선택 안된 상태이며 버튼 사용 중지됨]
     property Bitmap : TBitmap read FBitmap write SetBitmap;
+
+    /// 버튼 이미지의 상태를 몇 개로 나눠서 사용할 것인지 결정. 기본은 6개
     property BitmapCount :integer read FBitmapCount write SetBitmapCount;
 
     property Center : boolean read FCenter write SetCenter;
@@ -110,7 +114,7 @@ begin
   inherited;
 
   FIsMouseOver := false;
-  FBitmapCount := 3;
+  FBitmapCount := 6;
 
   Caption := '';
 
