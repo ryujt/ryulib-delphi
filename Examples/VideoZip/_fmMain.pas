@@ -40,20 +40,20 @@ begin
   FZip := createVideoZip;
   FUnZip := createVideoUnZip;
 
-  if openVideopZip(FZip, CAM_WIDTH, CAM_HEIGHT) = false then
+  if openVideoZip(FZip, 0, CAM_WIDTH, CAM_HEIGHT) = false then
     raise Exception.Create('Error - openVideopZip');
 
-  openVideopUnZip(FUnZip, CAM_WIDTH, CAM_HEIGHT);
+  openVideoUnZip(FUnZip, CAM_WIDTH, CAM_HEIGHT);
 end;
 
 procedure TfmMain.TimerTimer(Sender: TObject);
 begin
-  encode(FZip);
+  encodeVideoZip(FZip);
 
-  Caption := Format('Encode size: %d', [getSize(FZip)]);
+  Caption := Format('Encode size: %d', [getVideoZipSize(FZip)]);
 
-  if getSize(FZip) > 0 then begin
-    decode(FUnZip, getData(FZip), getSize(FZip));
+  if getVideoZipSize(FZip) > 0 then begin
+    decodeVideoUnZip(FUnZip, getVideoZipData(FZip), getVideoZipSize(FZip));
     SaveToBitmap(FUnZip, Image.Picture.Bitmap);
     Image.Invalidate;
   end;
