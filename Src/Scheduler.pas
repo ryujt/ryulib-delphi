@@ -117,6 +117,8 @@ destructor TScheduler.Destroy;
 begin
   TerminateNow;
 
+  do_clear;
+
   inherited;
 end;
 
