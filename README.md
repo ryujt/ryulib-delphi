@@ -1,3 +1,4 @@
-# ryulib-delphi
+# RyuLib for Delphi
 
-설명 자료는 [http://10bun.tv/install/ryulib-delphi/](http://10bun.tv/install/ryulib-delphi/) 참고
+## 참고 사이트
+* [http://10bun.tv/](http://10bun.tv/)
