@@ -49,46 +49,46 @@ type
   end;
 
 procedure initAudioZip;
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 function  createAudioZip(AContext:pointer; AOnData:TCallBackData; AOnError:TCallBackError):pointer;
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 procedure startAudioZip(AHandle:pointer);
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 procedure stopAudioZip(AHandle:pointer);
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 function  getMicVolume(AHandle:pointer):Single;
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 procedure  setMicVolume(AHandle:pointer; AVolume:Single);
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 procedure releaseAudioZip(AHandle:pointer);
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 function  createAudioUnZip(AContext:pointer; AOnError:TCallBackError):pointer;
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 procedure playAudio(AHandle:pointer; AData:pointer; ASize:integer);
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 procedure skipAudio(AHandle:pointer; Count:integer);
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 function  getDelayCount(AHandle:pointer):integer;
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 function  getSpeakerVolume(AHandle:pointer):Single;
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 procedure  setSpeakerVolume(AHandle:pointer; AVolume:Single);
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 procedure releaseAudioUnZip(AHandle:pointer);
-          cdecl; external 'AudioZip.dll';
+          cdecl; external 'AudioZip.dll' delayed;
 
 
 implementation
