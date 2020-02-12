@@ -41,54 +41,54 @@ type
   end;
 
 function  getCameraCount:integer;
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 function  getCameraName(AIndex:integer):PAnsiChar;
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 function  getCameraNameString(AIndex:integer):string;
 
 function  createVideoZip:pointer;
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 procedure releaseVideoZip(AHandle:pointer);
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 function openVideoZip(AHandle:pointer; AIndex,AWidth,AHeight:integer):boolean;
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 procedure closeVideoZip(AHandle:pointer);
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 procedure encodeVideoZip(AHandle:pointer);
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 function getVideoZipBitmap(AHandle:pointer):pointer;
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 function getVideoZipData(AHandle:pointer):pointer;
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 function getVideoZipSize(AHandle:pointer):integer;
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 function  createVideoUnZip:pointer;
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 procedure releaseVideoUnZip(AHandle:pointer);
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 procedure openVideoUnZip(AHandle:pointer; AWidth,AHeight:integer);
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 procedure refreshVideoUnZip(AHandle:pointer);
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 procedure decodeVideoUnZip(AHandle:pointer; AData:pointer; ASize:integer);
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 function getVideoUnZipBitmap(AHandle:pointer):pointer;
-          cdecl; external 'VideoZip.dll';
+          cdecl; external 'VideoZip.dll' delayed;
 
 procedure SaveToBitmap(AHandle:pointer; ABitmap:TBitmap);
 
