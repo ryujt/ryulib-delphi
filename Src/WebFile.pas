@@ -3,7 +3,7 @@ unit WebFile;
 interface
 
 uses
-  DebugTools, RyuLibBase, Disk, IdComponent, IdHTTP,
+  DebugTools, RyuLibBase, Disk,
   Windows, SysUtils, Classes, Wininet;
 
 type
