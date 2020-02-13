@@ -73,22 +73,22 @@ function getVideoZipSize(AHandle:pointer):integer;
           cdecl; external 'VideoZip.dll' delayed;
 
 function  createVideoUnZip:pointer;
-          cdecl; external 'VideoZip.dll' delayed;
+          cdecl; external 'VideoUnZip.dll' delayed;
 
 procedure releaseVideoUnZip(AHandle:pointer);
-          cdecl; external 'VideoZip.dll' delayed;
+          cdecl; external 'VideoUnZip.dll' delayed;
 
 procedure openVideoUnZip(AHandle:pointer; AWidth,AHeight:integer);
-          cdecl; external 'VideoZip.dll' delayed;
+          cdecl; external 'VideoUnZip.dll' delayed;
 
 procedure refreshVideoUnZip(AHandle:pointer);
-          cdecl; external 'VideoZip.dll' delayed;
+          cdecl; external 'VideoUnZip.dll' delayed;
 
 procedure decodeVideoUnZip(AHandle:pointer; AData:pointer; ASize:integer);
-          cdecl; external 'VideoZip.dll' delayed;
+          cdecl; external 'VideoUnZip.dll' delayed;
 
 function getVideoUnZipBitmap(AHandle:pointer):pointer;
-          cdecl; external 'VideoZip.dll' delayed;
+          cdecl; external 'VideoUnZip.dll' delayed;
 
 procedure SaveToBitmap(AHandle:pointer; ABitmap:TBitmap);
 
