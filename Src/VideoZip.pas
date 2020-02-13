@@ -19,6 +19,7 @@ type
 
     procedure Open(AIndex,AWidth,AHeight:integer);
     procedure Close;
+    procedure Capture;
     procedure Execute;
     procedure GetBitmap(ABitmap:TBitmap);
   public
@@ -58,6 +59,9 @@ function openVideoZip(AHandle:pointer; AIndex,AWidth,AHeight:integer):boolean;
           cdecl; external 'VideoZip.dll' delayed;
 
 procedure closeVideoZip(AHandle:pointer);
+          cdecl; external 'VideoZip.dll' delayed;
+
+procedure captureVideoZip(AHandle:pointer);
           cdecl; external 'VideoZip.dll' delayed;
 
 procedure encodeVideoZip(AHandle:pointer);
@@ -105,6 +109,11 @@ begin
 end;
 
 { TVideoZip }
+
+procedure TVideoZip.Capture;
+begin
+  captureVideoZip(FHandle);
+end;
 
 procedure TVideoZip.Close;
 begin
