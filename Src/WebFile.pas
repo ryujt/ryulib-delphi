@@ -213,7 +213,7 @@ procedure TWebFile.Download(const AURL,AFileName: string);
 begin
   FStoped := false;
 
-  if Assigned(FOnDownloadEnd) then FOnDownloadBegin(Self);
+  if Assigned(FOnDownloadBegin) then FOnDownloadBegin(Self);
 
   try
     do_Download(AURL, AFileName);
