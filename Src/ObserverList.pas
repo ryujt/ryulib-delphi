@@ -23,7 +23,7 @@ type
   private
     FList : TList;
     FCS : TCriticalSection;
-    procedure do_Notify(Observer:TObject; Packet:TJsonData);
+    procedure do_Notify(Observer:TObject; APacket:TJsonData);
     procedure do_WM_ASYNC_BROADCAST(var Msg: TMessage); message WM_ASYNC_BROADCAST;
     procedure do_RemoveItems;
   private
@@ -96,6 +96,7 @@ end;
 procedure TObserverList.BroadCast(APacket:TJsonData);
 var
   Loop : Integer;
+  code : string;
   Packet : TJsonData;
 begin
   if not Active then Exit;
@@ -104,7 +105,9 @@ begin
 //  Trace('TObserverList.BroadCast - ' + APacket.Text);
   {$ENDIF}
 
-  set_LastCommand( APacket.Values['Code'] );
+  code := APacket.Values['Code'];
+  if code = '' then code := APacket.Values['code'];
+  set_LastCommand(code);
 
   FCS.Enter;
   try
@@ -143,7 +146,7 @@ begin
   if not Active then Exit;
 
   {$IFDEF DEBUG}
-//  Trace('TObserverList.AsyncBroadcast - ' + AText);
+  //Trace('TObserverList.AsyncBroadcast - ' + AText);
   {$ENDIF}
 
   Packet := TJsonData.Create;
@@ -169,11 +172,14 @@ end;
 
 procedure TObserverList.BroadCastToOther(Sender: TObject; APacket: TJsonData);
 var
+  code : string;
   Loop : Integer;
 begin
   if not Active then Exit;
 
-  set_LastCommand( APacket.Values['Code'] );
+  code := APacket.Values['Code'];
+  if code = '' then code := APacket.Values['code'];
+  set_LastCommand(code);
 
   FCS.Enter;
   try
@@ -231,19 +237,23 @@ begin
   inherited;
 end;
 
-procedure TObserverList.do_Notify(Observer: TObject; Packet: TJsonData);
+procedure TObserverList.do_Notify(Observer: TObject; APacket: TJsonData);
 var
+  code : string;
   Proc : procedure (Packet:TJsonData) of object;
 begin
   // Notify 도중에 다시 Notify가 중복되지 않도록 조심, 재귀호출
   // 해당 Observer가 이미 삭제되었는데도, Remove 되지 않는 경우 조심
   try
+    code := APacket.Values['Code'];
+    if code = '' then code := APacket.Values['code'];
+
     TMethod(Proc).Data := Observer;
-    TMethod(Proc).Code := TObject(Observer).MethodAddress('rp_' + Packet.Values['Code']);
-    if Assigned(Proc) then Proc(Packet);
+    TMethod(Proc).Code := TObject(Observer).MethodAddress('rp_' + code);
+    if Assigned(Proc) then Proc(APacket);
   except
     on E : Exception do
-      Trace( Format('TObserverList.do_Notify - %s' + #13#10 + '    - %s, %s', [E.Message, Observer.ClassName, Packet.Text]) );
+      Trace( Format('TObserverList.do_Notify - %s' + #13#10 + '    - %s, %s', [E.Message, Observer.ClassName, APacket.Text]) );
   end;
 end;
 
@@ -286,8 +296,12 @@ begin
 end;
 
 procedure TObserverList.Notify(Observer: TObject; APacket: TJsonData);
+var
+  code : string;
 begin
-  set_LastCommand( APacket.Values['Code'] );
+  code := APacket.Values['Code'];
+  if code = '' then code := APacket.Values['code'];
+  set_LastCommand(code);
 
   FCS.Enter;
   try
