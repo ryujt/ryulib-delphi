@@ -170,7 +170,7 @@ function MiddleStr(Text,stStart,stEnd:string; IgnoreCase:boolean=true):string;
 var
   iStartPos, iEndPos : Integer;
 begin
-  Result := Text;
+  Result := '';
 
   if IgnoreCase then begin
     Text := LowerCase(Text);
@@ -179,12 +179,14 @@ begin
   end;
 
   iStartPos := Pos(stStart, Text);
-  if iStartPos > 0 then iStartPos := iStartPos + Length(stStart);
+  if iStartPos = 0 then Exit;
+
+  Delete(Text, 1, iStartPos);
 
   iEndPos := Pos(stEnd, Text);
+  if iEndPos = 0 then Exit;
 
-  if (iStartPos > 0) and (iEndPos > 0) then
-    Result := Copy(Result, iStartPos, iEndPos-iStartPos);
+  Result := Copy(Text, 1, iEndPos - 1);
 end;
 
 function DeleteLeft(Text,Border:string; IgnoreCase:boolean=true):string;
