@@ -3,7 +3,7 @@ unit ScreenCapture;
 interface
 
 uses
-  CursorCaptrue, ScreenSource,
+  CursorCaptrue, ScreenSource, RyuGraphics,
   Windows, Classes, SysUtils, Vcl.Graphics;
 
 type
@@ -63,7 +63,25 @@ type
     property TargetHandle : HWND read GetTargetHandle write SetTargetHandle;
   end;
 
+procedure ScreenSaveTo(const AFilename:string);
+
 implementation
+
+procedure ScreenSaveTo(const AFilename:string);
+var
+  ScreenCapture : TScreenCapture;
+begin
+  ScreenCapture := TScreenCapture.Create(nil);
+  try
+    ScreenCapture.ScreenSourceType := ssRegion;
+    ScreenCapture.Width  := GetSystemMetrics(SM_CXSCREEN);
+    ScreenCapture.Height := GetSystemMetrics(SM_CYSCREEN);
+    ScreenCapture.Capture;
+    SaveImageToJPG(ScreenCapture.Bitmap, AFilename, 100);
+  finally
+    ScreenCapture.Free;
+  end;
+end;
 
 { TScreenCapture }
 
