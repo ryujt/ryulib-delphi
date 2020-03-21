@@ -25,7 +25,7 @@ type
 
   TAsyncTaskHandler = class (THandleComponent)
   private
-    procedure do_WM_Downloaded(var AMsg:TMessage); message WM_USER;
+    procedure do_WM_Handled(var AMsg:TMessage); message WM_USER;
   public
   end;
 
@@ -58,7 +58,7 @@ end;
 
 { TAsyncTaskHandler }
 
-procedure TAsyncTaskHandler.do_WM_Downloaded(var AMsg: TMessage);
+procedure TAsyncTaskHandler.do_WM_Handled(var AMsg: TMessage);
 var
   AsyncTaskData : TAsyncTaskData;
 begin
