@@ -133,15 +133,19 @@ end;
 
 procedure TRemoteClient.do_deskzip_packet(APacket: PPacket);
 begin
-  case TFrameType(APacket^.PacketType) of
-    ftNeedNext: ;
-    ftEndOfDeskZip: ;
-    ftFrameStart, ftBitmap, ftJpeg, ftPixel: FDeskUnZip.Execute(APacket);
+  try
+    case TFrameType(APacket^.PacketType) of
+      ftNeedNext: ;
+      ftEndOfDeskZip: ;
+      ftFrameStart, ftBitmap, ftJpeg, ftPixel: FDeskUnZip.Execute(APacket);
 
-    ftFrameEnd: begin
-      FDeskUnZip.Execute(APacket);
-      sp_AskDeskZip;
+      ftFrameEnd: begin
+        FDeskUnZip.Execute(APacket);
+        sp_AskDeskZip;
+      end;
     end;
+  except
+    Trace( Format('TRemoteClient.do_deskzip_packet - %d', [APacket^.PacketType]) );
   end;
 end;
 
@@ -151,35 +155,39 @@ const
 var
   packet: PRemoteControlPacket absolute APacket;
 begin
-  case TPacketType(APacket^.PacketType) of
-    ptConnectionID: rp_ConnectionID( Pointer(APacket) );
+  try
+    case TPacketType(APacket^.PacketType) of
+      ptConnectionID: rp_ConnectionID( Pointer(APacket) );
 
-    ptErPeerConnected:
-      AsyncTask(
-        procedure (AUserData:pointer) begin
-          if Assigned(FOnPeerConnectError) then FOnPeerConnectError(Self);
-        end
-      );
+      ptErPeerConnected:
+        AsyncTask(
+          procedure (AUserData:pointer) begin
+            if Assigned(FOnPeerConnectError) then FOnPeerConnectError(Self);
+          end
+        );
 
-    ptPeerConnected:
-      AsyncTask(
-        procedure (AUserData:pointer) begin
-          if Assigned(FOnPeerConnected) then FOnPeerConnected(Self);
-        end
-      );
+      ptPeerConnected:
+        AsyncTask(
+          procedure (AUserData:pointer) begin
+            if Assigned(FOnPeerConnected) then FOnPeerConnected(Self);
+          end
+        );
 
-    ptPeerDisconnected:
-      AsyncTask(
-        procedure (AUserData:pointer) begin
-          if Assigned(FOnPeerDisconnected) then FOnPeerDisconnected(Self);
-        end
-      );
+      ptPeerDisconnected:
+        AsyncTask(
+          procedure (AUserData:pointer) begin
+            if Assigned(FOnPeerDisconnected) then FOnPeerDisconnected(Self);
+          end
+        );
 
-    ptMouseMove: SetCursorPos(packet^.X, packet^.Y);
-    ptMouseDown, ptMouseUp: Mouse_Event(packet^.Key, packet^.X, packet^.Y, 0, 0);
+      ptMouseMove: SetCursorPos(packet^.X, packet^.Y);
+      ptMouseDown, ptMouseUp: Mouse_Event(packet^.Key, packet^.X, packet^.Y, 0, 0);
 
-    ptKeyDown: Keybd_Event(packet^.Key, MapVirtualKey(packet^.Key, 0), KEYEVENTF_KEYDOWN, 0);
-    ptKeyUp: Keybd_Event(packet^.Key, MapVirtualKey(packet^.Key, 0), KEYEVENTF_KEYUP, 0);
+      ptKeyDown: Keybd_Event(packet^.Key, MapVirtualKey(packet^.Key, 0), KEYEVENTF_KEYDOWN, 0);
+      ptKeyUp: Keybd_Event(packet^.Key, MapVirtualKey(packet^.Key, 0), KEYEVENTF_KEYUP, 0);
+    end;
+  except
+    Trace( Format('TRemoteClient.do_remote_control_packet - %d', [APacket^.PacketType]) );
   end;
 end;
 
