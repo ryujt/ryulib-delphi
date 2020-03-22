@@ -10,7 +10,13 @@ uses
 type
   TAsyncTaskProcedure = reference to procedure (AUserData:pointer);
 
-procedure AsyncTask(AProcedure,ACallBack:TAsyncTaskProcedure; AUserData:pointer=nil);
+{* 스레드를 이용해서 AProcedure를 실행하고 완료하면 ACallBack을 메인 스레드에서 실행한다.
+}
+procedure AsyncTask(AProcedure,ACallBack:TAsyncTaskProcedure; AUserData:pointer=nil); overload;
+
+{* 스레드에서 GUI 등을 접근하면 안되기 때문에 윈도우 메시지를 이용하여 ACallBack을 메인 스레드에서 실행한다.
+}
+procedure AsyncTask(ACallBack:TAsyncTaskProcedure; AUserData:pointer=nil); overload;
 
 implementation
 
@@ -54,6 +60,16 @@ begin
   AsyncTaskData.CallBack := ACallBack;
   AsyncTaskData.UserData := AUserData;
   QueueIOWorkItem(InternalThreadFunction, Pointer(AsyncTaskData));
+end;
+
+procedure AsyncTask(ACallBack:TAsyncTaskProcedure; AUserData:pointer=nil);
+var
+  AsyncTaskData : TAsyncTaskData;
+begin
+  AsyncTaskData := TAsyncTaskData.Create;
+  AsyncTaskData.CallBack := ACallBack;
+  AsyncTaskData.UserData := AUserData;
+  PostMessage(AsyncTaskHandler.Handle, WM_USER, Integer(AsyncTaskData), 0);
 end;
 
 { TAsyncTaskHandler }
