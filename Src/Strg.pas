@@ -71,6 +71,8 @@ function MemoryStr(AValue:int64):string;
 
 function ByteValueToSizeString(Value:Int64):string;
 
+function StringPointer(const AText:string):PString;
+
 Implementation
 
 function CopyLeft(const AText,ABorder:string; AIgnoreCase:boolean):string;
@@ -605,6 +607,12 @@ begin
   setlength(stFileSize,255);
   setlength(stFileSize, length(ShLwApi.StrFormatByteSize64A(Value, pansichar(stFileSize),length(stFileSize))));
   Result:= String(stFileSize);
+end;
+
+function StringPointer(const AText:string):PString;
+begin
+  New(Result);
+  Result^ := AText;
 end;
 
 end.
