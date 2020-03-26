@@ -26,7 +26,7 @@ type
     procedure Clear;
     procedure Push(AItem:T);
     function Peek:T;
-    function Pop(var AItem:T):boolean; overload;
+    function Pop(var AItem:T):boolean;
 
     procedure Iterate(AProcedure:TIterateProcedure<T>); overload;
 
@@ -147,9 +147,6 @@ begin
        FCount := FCount - 1;
        AItem := Node.Item;
        Node.Free;
-     end else begin
-       Node := FEmpty;
-       AItem := Node.Item;
      end;
   finally
     FCS.Release;
