@@ -75,6 +75,7 @@ begin
       Exit;
     end;
 
+    ZeroMemory(pBuf, BUFFER_SIZE);
     CopyMemory(pBuf, PChar(AMsg), Length(AMsg) * SizeOf(Char));
   finally
     UnmapViewOfFile(pBuf);
