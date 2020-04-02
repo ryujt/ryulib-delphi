@@ -172,6 +172,8 @@ begin
   RemoveThreadObject( FHandle );
 
   if Assigned(FOnTerminated) then FOnTerminated(Self);
+
+  Trace( Format('TSimpleThread - Terminated (%s)', [Name]) );
 end;
 
 procedure TSimpleThread.do_ExecuteAnonymous;
@@ -188,7 +190,7 @@ procedure TSimpleThread.init;
 begin
   IsMultiThread := true;
 
-  FFreeOnTerminate := true;
+  FFreeOnTerminate := false;
   FTerminated := false;
   FIsRunning := false;
 
@@ -208,12 +210,15 @@ end;
 procedure TSimpleThread.Terminate;
 begin
   FTerminated := true;
+  WakeUp;
 end;
 
 procedure TSimpleThread.Terminate(ATimeout: integer);
 var
   OldTick, Tick : integer;
 begin
+  if FTerminated then Exit;
+
   FTerminated := true;
   WakeUp;
 
@@ -238,6 +243,8 @@ end;
 
 procedure TSimpleThread.TerminateNow;
 begin
+  if FTerminated then Exit;
+
   FFreeOnTerminate := false;
   FTerminated := true;
 

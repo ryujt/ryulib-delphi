@@ -50,7 +50,7 @@ begin
 
   FDeskZip := nil;
 
-  FScheduler := TScheduler.Create;
+  FScheduler := TScheduler.Create('DeskZipUnit');
   FScheduler.OnRepeat := on_DeskZip_repeat;
   FScheduler.OnTask := on_DeskZip_task;
 end;

@@ -32,7 +32,7 @@ type
     FOnTask: TWorkerEvent;
     FOnRepeat: TNotifyEvent;
   public
-    constructor Create;
+    constructor Create(ATag:string='Scheduler'); reintroduce;
     destructor Destroy; override;
 
     procedure Terminate;
@@ -73,12 +73,16 @@ end;
 
 procedure TScheduler.Add(ATask:integer; AText: string);
 begin
+  if FSimpleThread.Terminated then Exit;
+
   FQueue.Push(TTaskOfScheduler.Create(ATask, AText, nil, 0, 0));
   FSimpleThread.WakeUp;
 end;
 
 procedure TScheduler.Add(ATask: integer);
 begin
+  if FSimpleThread.Terminated then Exit;
+
   FQueue.Push(TTaskOfScheduler.Create(ATask, '', nil, 0, 0));
   FSimpleThread.WakeUp;
 end;
@@ -86,31 +90,36 @@ end;
 procedure TScheduler.Add(ATask: integer; AText: string; AData: pointer; ASize,
   ATag: integer);
 begin
+  if FSimpleThread.Terminated then Exit;
+
   FQueue.Push(TTaskOfScheduler.Create(ATask, AText, AData, ASize, ATag));
   FSimpleThread.WakeUp;
 end;
 
 procedure TScheduler.Add(AText: string);
 begin
+  if FSimpleThread.Terminated then Exit;
+
   FQueue.Push(TTaskOfScheduler.Create(0, AText, nil, 0, 0));
   FSimpleThread.WakeUp;
 end;
 
 procedure TScheduler.Add(ATask: integer; AData: pointer);
 begin
+  if FSimpleThread.Terminated then Exit;
+
   FQueue.Push(TTaskOfScheduler.Create(ATask, '', AData, 0, 0));
   FSimpleThread.WakeUp;
 end;
 
-constructor TScheduler.Create;
+constructor TScheduler.Create(ATag:string);
 begin
-  inherited;
+  inherited Create;
 
   FIsStarted := false;
 
   FQueue := TThreadQueue<TTaskOfScheduler>.Create;
-  FSimpleThread := TSimpleThread.Create('Scheduler', on_FSimpleThread_execute);
-  FSimpleThread.FreeOnTerminate := false;
+  FSimpleThread := TSimpleThread.Create(ATag, on_FSimpleThread_execute);
 end;
 
 destructor TScheduler.Destroy;
@@ -151,7 +160,6 @@ begin
   end;
 
   FreeAndNil(FQueue);
-  FreeAndNil(FSimpleThread);
 end;
 
 procedure TScheduler.Sleep(ATimeOut: DWORD);
@@ -181,6 +189,7 @@ end;
 
 procedure TScheduler.TerminateNow;
 begin
+  FSimpleThread.Terminate;
   FSimpleThread.TerminateNow;
 end;
 
