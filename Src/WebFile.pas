@@ -168,30 +168,41 @@ var
 begin
   Result := False;
 
-  hSession := InternetOpen(PChar(sUserAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
-  if not Assigned(hSession) then Exit;
-
   try
-    hService := InternetOpenUrl(hSession, PChar(aUrl), nil, 0, INTERNET_FLAG_RELOAD, 0);
-    if not Assigned(hService) then Exit;
-
-    fsData := TFileStream.Create(ADst, fmCreate);
+    hSession := InternetOpen(PChar(sUserAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+    if not Assigned(hSession) then Exit;
     try
-      while True do begin
-        dwBytesRead := 4096;
-        InternetReadFile(hService, @Buffer, 4096, dwBytesRead);
-        if dwBytesRead = 0 then break;
+      hService := InternetOpenUrl(hSession, PChar(aUrl), nil, 0, INTERNET_FLAG_RELOAD, 0);
+      if not Assigned(hService) then Exit;
 
-        fsData.Write(Buffer, dwBytesRead);
+      fsData := TFileStream.Create(ADst + '.tmp', fmCreate);
+      try
+        while True do begin
+          dwBytesRead := 4096;
+          InternetReadFile(hService, @Buffer, 4096, dwBytesRead);
+          if dwBytesRead = 0 then break;
+
+          fsData.Write(Buffer, dwBytesRead);
+        end;
+
+        Result := True;
+      finally
+        InternetCloseHandle(hService);
+        fsData.Free;
       end;
 
-      Result := True;
+      if Result then begin
+        DeleteFile(ADst);
+        RenameFile(ADst + '.tmp', ADst);
+      end;
     finally
-      InternetCloseHandle(hService);
-      fsData.Free;
+      InternetCloseHandle(hSession);
     end;
-  finally
-    InternetCloseHandle(hSession);
+  except
+    on E : Exception do begin
+      Result := false;
+      Trace('WebFile.DownloadFromURL -' + E.Message);
+    end;
   end;
 end;
 
