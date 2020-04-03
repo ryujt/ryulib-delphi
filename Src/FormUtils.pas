@@ -6,16 +6,19 @@ uses
   Disk, Strg, RyuGraphics,
   SysUtils, Classes, Graphics, Controls, Forms;
 
-procedure SaveFormInfo(const AForm:TForm);
-procedure LoadFormInfo(const AForm:TForm; ADefaultWidth,ADefaultHeight:integer);
+procedure SaveFormInfo(const APath:string; const AForm:TForm);
+procedure LoadFormInfo(const APath:string; const AForm:TForm; ADefaultWidth,ADefaultHeight:integer);
 
 implementation
 
-procedure SaveFormInfo(const AForm:TForm);
+procedure SaveFormInfo(const APath:string; const AForm:TForm);
 var
   filename : string;
 begin
-  filename := DeleteRight(ParamStr(0), '.') + 'ini';
+  if APath = '' then
+    filename := DeleteRight(ParamStr(0), '.') + 'ini'
+  else
+    filename := APath + DeleteRight( ExtractFileName(ParamStr(0)), '.') + 'ini';
 
   if AForm.WindowState = wsMaximized then begin
     WriteIniInt(filename, AForm.Name, 'Maximized', 1);
@@ -28,11 +31,14 @@ begin
   end;
 end;
 
-procedure LoadFormInfo(const AForm:TForm; ADefaultWidth,ADefaultHeight:integer);
+procedure LoadFormInfo(const APath:string; const AForm:TForm; ADefaultWidth,ADefaultHeight:integer);
 var
   filename : string;
 begin
-  filename := DeleteRight(ParamStr(0), '.') + 'ini';
+  if APath = '' then
+    filename := DeleteRight(ParamStr(0), '.') + 'ini'
+  else
+    filename := APath + DeleteRight( ExtractFileName(ParamStr(0)), '.') + 'ini';
 
   AForm.Left   := IniInteger(filename, AForm.Name, 'Left',   0);
   AForm.Top    := IniInteger(filename, AForm.Name, 'Top',    0);
