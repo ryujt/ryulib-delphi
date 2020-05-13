@@ -183,7 +183,7 @@ begin
   iStartPos := Pos(stStart, Text);
   if iStartPos = 0 then Exit;
 
-  Delete(Text, 1, iStartPos);
+  Delete(Text, 1, iStartPos + Length(stStart)-1);
 
   iEndPos := Pos(stEnd, Text);
   if iEndPos = 0 then Exit;
