@@ -5,8 +5,8 @@ interface
 uses
   Windows, Classes, SysUtils;
 
-procedure Trace(const AMsg:string); overload;
-procedure Trace(AMsg:integer); overload;
+procedure Trace(const AMsg:string; const ATag:string='[Ryu] '); overload;
+procedure Trace(AMsg:integer; const ATag:string='[Ryu] '); overload;
 
 function TraceCount:integer;
 
@@ -18,14 +18,14 @@ uses
 var
   Queue : TSuspensionQueue<string>;
 
-procedure Trace(const AMsg:string);
+procedure Trace(const AMsg:string; const ATag:string);
 begin
-  Queue.Push('[Ryu] ' + AMsg);
+  Queue.Push(ATag + AMsg);
 end;
 
-procedure Trace(AMsg:integer);
+procedure Trace(AMsg:integer; const ATag:string);
 begin
-  Queue.Push('[Ryu] ' + IntToStr(AMsg));
+  Queue.Push(ATag + IntToStr(AMsg));
 end;
 
 function TraceCount:integer;
