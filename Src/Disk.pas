@@ -75,10 +75,10 @@ function RunCaptured(const APath, AExecutive, AParameter: string): string;
 function GetAssociation(const DocFileName: string): string;
 procedure SetAssociation(ExtName:String; AppName:String);
 
-/// ÆÄÀÏÀÌ ÀÖ´Â Áö °Ë»ç
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½Ë»ï¿½
 function FindFile(AFileName:string):boolean;
 
-/// ÆÄÀÏÀÌ ÀÖÀ¸¸é Ã¹ ¹ø Â° ÆÄÀÏ ÀüÃ¼ ÀÌ¸§À» ¸®ÅÏ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¹ ï¿½ï¿½ Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 function FindFileName(AFileName:string):string;
 
 Implementation
@@ -280,7 +280,7 @@ end;
 
 function GetWindowsPath:string;
 begin
-  Result := GetSpecialFolder(CSIDL_COMMON_APPDATA);
+  Result := GetSpecialFolder(CSIDL_WINDOWS);
   SetLastChar(Result, '\');
 end;
 
@@ -1004,7 +1004,7 @@ begin
       Continue;
     end;
 
-    // AFileName Á¶°Ç¿¡ ¸Â´Â ÆÄÀÏÀ» Ã£¾ÒÀ½
+    // AFileName ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½Â´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½
     Result := true;
     Break;
 
@@ -1032,7 +1032,7 @@ begin
       Continue;
     end;
 
-    // AFileName Á¶°Ç¿¡ ¸Â´Â ÆÄÀÏÀ» Ã£¾ÒÀ½
+    // AFileName ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½Â´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½
     Result := ExtractFilePath(AFileName) + SearchRec.Name;
     Break;
 
