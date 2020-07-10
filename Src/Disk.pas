@@ -1,4 +1,4 @@
-Unit Disk;
+﻿Unit Disk;
 
 Interface
 
@@ -41,6 +41,7 @@ procedure DeleteFolder(AFolder:string);
 
 function ShellExecuteFile(FileName,Parameters,Directory:string):integer;
 procedure ShellExecuteAndWait(AFileName,AParams,APath: string);
+procedure ShellExecuteHide(FileName,Params,Directory:string);
 function RunFile(AFileName,AWorkDir:string; AVisibility:boolean=true):Cardinal;
 
 function  IniString(FileName,Section,Ident,DefaultStr:string):string;
@@ -60,7 +61,6 @@ function LoadFileAsUTF8(AFilename:string):string;
 procedure SaveLogMessage(FileName,Msg:string);
 
 procedure AddDataToFile(FileName:string; var Data; Size:Integer);
-procedure ShellExecuteWait(FileName,Params,Directory:string);
 function GetStorageFreeSpace(const ADrive: string): Int64;
 function GetStorageTotalSpace(const ADrive: string): Int64;
 function GetCurrentDrive: string;
@@ -525,7 +525,27 @@ begin
   end;
 end;
 
-function RunFile(AFileName,AWorkDir:string; AVisibility:boolean=true):Cardinal;
+procedure ShellExecuteHide(FileName,Params,Directory:String);
+var
+  exInfo : TShellExecuteInfo;
+begin
+  FillChar(exInfo, SizeOf(exInfo), 0);
+  with exInfo do begin
+    cbSize := SizeOf(exInfo);
+    fMask := SEE_MASK_NOCLOSEPROCESS or SEE_MASK_FLAG_DDEWAIT;
+    Wnd := GetActiveWindow();
+    exInfo.lpVerb := 'open';
+    exInfo.lpParameters := PChar(Params);
+    exInfo.lpDirectory := PChar(Directory);
+    lpFile := PChar(FileName);
+    nShow := SW_HIDE;
+  end;
+
+  ShellExecuteEx(@exInfo);
+end;
+
+function RunFile(AFilename, AWorkDir: string; AVisibility: Boolean = true)
+  : Cardinal;
 var
   isCondition : boolean;
   StartupInfo: TStartupInfo;
@@ -744,38 +764,6 @@ begin
   finally
     fsData.Free;
   end;
-end;
-
-procedure ShellExecuteWait(FileName,Params,Directory:String);
-var
-  Ph : DWORD;
-  exInfo : TShellExecuteInfo;
-begin
- FillChar( exInfo, Sizeof(exInfo), 0 );
-
- with exInfo do begin
-   cbSize:= Sizeof( exInfo );
-   fMask := SEE_MASK_NOCLOSEPROCESS or SEE_MASK_FLAG_DDEWAIT;
-   Wnd := GetActiveWindow();
-   ExInfo.lpVerb := 'open';
-   ExInfo.lpParameters := PChar(Params);
-   ExInfo.lpDirectory := PChar(Directory);
-   lpFile:= PChar(FileName);
-   nShow := SW_SHOWNORMAL;
- end;
-
- if ShellExecuteEx(@exInfo) then begin
-   Ph := exInfo.HProcess;
- end else begin
-   raise Exception.Create(SysErrorMessage(GetLastError));
-   exit;
- end;
-
- while WaitForSingleObject(ExInfo.hProcess, 50) <> WAIT_OBJECT_0 do
-   Sleep(1);
-//   Application.ProcessMessages;
-
- CloseHandle(Ph);
 end;
 
 procedure _GetDiskSpaceEx(const ADrive: string;
