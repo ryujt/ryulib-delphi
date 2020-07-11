@@ -532,12 +532,13 @@ begin
   FillChar(exInfo, SizeOf(exInfo), 0);
   with exInfo do begin
     cbSize := SizeOf(exInfo);
-    fMask := SEE_MASK_NOCLOSEPROCESS or SEE_MASK_FLAG_DDEWAIT;
+//    fMask := SEE_MASK_NOCLOSEPROCESS or SEE_MASK_FLAG_DDEWAIT;
     Wnd := GetActiveWindow();
     exInfo.lpVerb := 'open';
     exInfo.lpParameters := PChar(Params);
     exInfo.lpDirectory := PChar(Directory);
     lpFile := PChar(FileName);
+    nShow := SW_SHOWNORMAL;
     nShow := SW_HIDE;
   end;
 
