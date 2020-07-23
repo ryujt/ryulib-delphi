@@ -37,8 +37,9 @@ type
     destructor Destroy; override;
 
     procedure Open(AWidth,AHeight:integer);
+    procedure Refresh;
     procedure Execute(AData:pointer; ASize:integer);
-    procedure GetBitmap(ABitmap:TBitmap);
+    function GetBitmap(ABitmap:TBitmap):boolean;
   end;
 
 function  getCameraCount:integer;
@@ -204,12 +205,18 @@ begin
   openVideoUnZip(FHandle, AWidth, AHeight);
 end;
 
-procedure TVideoUnZip.GetBitmap(ABitmap: TBitmap);
+procedure TVideoUnZip.Refresh;
+begin
+  refreshVideoUnZip(FHandle);
+end;
+
+function TVideoUnZip.GetBitmap(ABitmap: TBitmap): boolean;
 var
   bitmap_ptr : pointer;
 begin
   bitmap_ptr := getVideoUnZipBitmap(FHandle);
-  if bitmap_ptr = nil then Exit;
+  Result := bitmap_ptr <> nil;
+  if Result = false then Exit;
 
   ABitmap.PixelFormat := pf32bit;
   ABitmap.Canvas.Brush.Color := clBlack;
