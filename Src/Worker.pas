@@ -23,12 +23,14 @@ type
   TWorker = class
   private
     FQueue : TSuspensionQueue<TTaskOfWorker>;
+  private
     FSimpleThread : TSimpleThread;
     procedure on_FSimpleThread_execute(ASimpleThread:TSimpleThread);
   private
     FOnTask: TWorkerEvent;
+    FOnTerminated: TNotifyEvent;
   public
-    constructor Create;
+    constructor Create(ATag:string='Woker'); reintroduce;
     destructor Destroy; override;
 
     procedure TerminateNow;
@@ -42,6 +44,7 @@ type
     procedure Add(ATask:integer; AText:string; AData:pointer; ASize,ATag:integer); overload;
   public
     property OnTask : TWorkerEvent read FOnTask write FOnTask;
+    property OnTerminated : TNotifyEvent read FOnTerminated write FOnTerminated;
   end;
 
 implementation
@@ -86,19 +89,18 @@ begin
   FQueue.Push(TTaskOfWorker.Create(ATask, '', AData, 0, 0));
 end;
 
-constructor TWorker.Create;
+constructor TWorker.Create(ATag:string='Woker');
 begin
-  inherited;
+  inherited Create;
 
   FQueue := TSuspensionQueue<TTaskOfWorker>.Create;
-  FSimpleThread := TSimpleThread.Create('Worker', on_FSimpleThread_execute);
+  FSimpleThread := TSimpleThread.Create(ATag, on_FSimpleThread_execute);
   FSimpleThread.FreeOnTerminate := false;
 end;
 
 destructor TWorker.Destroy;
 begin
   FSimpleThread.TerminateNow;
-
   FreeAndNil(FQueue);
   FreeAndNil(FSimpleThread);
 
@@ -113,6 +115,8 @@ begin
     task := FQueue.Pop;
     if Assigned(FOnTask) then FOnTask(Self, task.FTask, task.FText, task.FData, task.FSize, task.FTag);
   end;
+
+  if Assigned(FOnTerminated) then FOnTerminated(Self);
 end;
 
 procedure TWorker.Terminate;
@@ -128,6 +132,7 @@ end;
 procedure TWorker.TerminateNow;
 begin
   FSimpleThread.TerminateNow;
+  if Assigned(FOnTerminated) then FOnTerminated(Self);
 end;
 
 end.
