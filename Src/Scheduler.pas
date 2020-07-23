@@ -31,6 +31,7 @@ type
   private
     FOnTask: TWorkerEvent;
     FOnRepeat: TNotifyEvent;
+    FOnTerminated: TNotifyEvent;
   public
     constructor Create(ATag:string='Scheduler'); reintroduce;
     destructor Destroy; override;
@@ -53,6 +54,7 @@ type
     property IsStarted : boolean read FIsStarted;
     property OnTask : TWorkerEvent read FOnTask write FOnTask;
     property OnRepeat : TNotifyEvent read FOnRepeat write FOnRepeat;
+    property OnTerminated : TNotifyEvent read FOnTerminated write FOnTerminated;
   end;
 
 implementation
@@ -125,8 +127,8 @@ end;
 destructor TScheduler.Destroy;
 begin
   TerminateNow;
-
   do_clear;
+  FreeAndNil(FQueue);
 
   inherited;
 end;
@@ -143,7 +145,7 @@ var
   task : TTaskOfScheduler;
 begin
   while ASimpleThread.Terminated = false do begin
-    if FQueue.Pop(task) then begin
+    while FQueue.Pop(task) do begin
       try
         if Assigned(FOnTask) then FOnTask(Self, task.FTask, task.FText, task.FData, task.FSize, task.FTag);
       finally
@@ -159,7 +161,7 @@ begin
     end;
   end;
 
-  FreeAndNil(FQueue);
+  if Assigned(FOnTerminated) then FOnTerminated(Self);  
 end;
 
 procedure TScheduler.Sleep(ATimeOut: DWORD);
@@ -191,6 +193,7 @@ procedure TScheduler.TerminateNow;
 begin
   FSimpleThread.Terminate;
   FSimpleThread.TerminateNow;
+  if Assigned(FOnTerminated) then FOnTerminated(Self);
 end;
 
 end.
