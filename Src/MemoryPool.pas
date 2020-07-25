@@ -3,7 +3,7 @@ unit MemoryPool;
 interface
 
 uses
-  DebugTools, LazyRelease, Interlocked,
+  DebugTools, Interlocked,
   Windows, SysUtils, Classes;
 
 const
