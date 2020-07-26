@@ -37,6 +37,8 @@ type
     procedure Terminate;
     procedure TerminateAndWait;
 
+    procedure Sleep(ATimeOut:DWORD);
+
     procedure Add(ATask:integer); overload;
     procedure Add(AText:string); overload;
     procedure Add(ATask:integer; AText:string); overload;
@@ -117,6 +119,11 @@ begin
   end;
 
   if Assigned(FOnTerminated) then FOnTerminated(Self);
+end;
+
+procedure TWorker.Sleep(ATimeOut: DWORD);
+begin
+  FSimpleThread.Sleep(ATimeOut);
 end;
 
 procedure TWorker.Terminate;
