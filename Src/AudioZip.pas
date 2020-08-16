@@ -15,16 +15,25 @@ type
     FHandle : pointer;
     FOnData: TDataEvent;
     FOnEror: TIntegerEvent;
-    function GetVolume: single;
-    procedure SetVolume(const Value: single);
+    function Get_MicVolume: single;
+    procedure Set_MicVolume(const Value: single);
+    function Get_SystemVolume: single;
+    procedure Set_SystemVolume(const Value: single);
+    function Get_IsMicMuted: boolean;
+    function Get_IsSystemMuted: boolean;
+    procedure Set_IsMicMuted(const Value: boolean);
+    procedure Set_IsSystemMuted(const Value: boolean);
   public
     constructor Create;
     destructor Destroy; override;
 
-    procedure Start;
+    function Start(ADeviceID:integer):boolean;
     procedure Stop;
   public
-    property Volume : single read GetVolume write SetVolume;
+    property MicMuted : boolean read Get_IsMicMuted write Set_IsMicMuted;
+    property SystemMuted : boolean read Get_IsSystemMuted write Set_IsSystemMuted;
+    property MicVolume : single read Get_MicVolume write Set_MicVolume;
+    property SystemVolume : single read Get_SystemVolume write Set_SystemVolume;
     property OnData : TDataEvent read FOnData write FOnData;
     property OnEror : TIntegerEvent read FOnEror write FOnEror;
   end;
@@ -33,6 +42,7 @@ type
   private
     FHandle : pointer;
     FOnEror: TIntegerEvent;
+    FMuted: boolean;
     function GetAudioUnZipDelayCount: integer;
     function GetVolume: single;
     procedure SetVolume(const Value: single);
@@ -44,6 +54,7 @@ type
     procedure Skip(ACount:integer);
   public
     property DelayCount : integer read GetAudioUnZipDelayCount;
+    property Muted : boolean read FMuted write FMuted;
     property Volume : single read GetVolume write SetVolume;
     property OnEror : TIntegerEvent read FOnEror write FOnEror;
   end;
@@ -54,16 +65,34 @@ procedure initAudioZip;
 function  createAudioZip(AContext:pointer; AOnData:TCallBackData; AOnError:TCallBackError):pointer;
           cdecl; external 'AudioZip.dll' delayed;
 
-procedure startAudioZip(AHandle:pointer);
+function startAudioZip(AHandle:pointer; ADeviceID:integer):boolean;
           cdecl; external 'AudioZip.dll' delayed;
 
 procedure stopAudioZip(AHandle:pointer);
           cdecl; external 'AudioZip.dll' delayed;
 
+function  isMicMuted(AHandle:pointer):boolean;
+          cdecl; external 'AudioZip.dll' delayed;
+
+function  isSystemMuted(AHandle:pointer):boolean;
+          cdecl; external 'AudioZip.dll' delayed;
+
 function  getMicVolume(AHandle:pointer):Single;
           cdecl; external 'AudioZip.dll' delayed;
 
-procedure  setMicVolume(AHandle:pointer; AVolume:Single);
+function  getSystemVolume(AHandle:pointer):Single;
+          cdecl; external 'AudioZip.dll' delayed;
+
+procedure setMicMuted(AHandle:pointer; AValue:boolean);
+          cdecl; external 'AudioZip.dll' delayed;
+
+procedure setSystemMuted(AHandle:pointer; AValue:boolean);
+          cdecl; external 'AudioZip.dll' delayed;
+
+procedure setMicVolume(AHandle:pointer; AVolume:Single);
+          cdecl; external 'AudioZip.dll' delayed;
+
+procedure setSystemVolume(AHandle:pointer; AVolume:Single);
           cdecl; external 'AudioZip.dll' delayed;
 
 procedure releaseAudioZip(AHandle:pointer);
@@ -84,7 +113,7 @@ function  getDelayCount(AHandle:pointer):integer;
 function  getSpeakerVolume(AHandle:pointer):Single;
           cdecl; external 'AudioZip.dll' delayed;
 
-procedure  setSpeakerVolume(AHandle:pointer; AVolume:Single);
+procedure setSpeakerVolume(AHandle:pointer; AVolume:Single);
           cdecl; external 'AudioZip.dll' delayed;
 
 procedure releaseAudioUnZip(AHandle:pointer);
@@ -123,19 +152,49 @@ begin
   inherited;
 end;
 
-function TAudioZip.GetVolume: single;
+function TAudioZip.Get_IsMicMuted: boolean;
+begin
+  Result := isMicMuted(FHandle);
+end;
+
+function TAudioZip.Get_IsSystemMuted: boolean;
+begin
+  Result := isSystemMuted(FHandle);
+end;
+
+function TAudioZip.Get_MicVolume: single;
 begin
   Result := getMicVolume(FHandle);
 end;
 
-procedure TAudioZip.SetVolume(const Value: single);
+function TAudioZip.Get_SystemVolume: single;
+begin
+  Result := getSystemVolume(FHandle);
+end;
+
+procedure TAudioZip.Set_IsMicMuted(const Value: boolean);
+begin
+  setMicMuted(FHandle, Value);
+end;
+
+procedure TAudioZip.Set_IsSystemMuted(const Value: boolean);
+begin
+  setSystemMuted(FHandle, Value);
+end;
+
+procedure TAudioZip.Set_MicVolume(const Value: single);
 begin
   setMicVolume(FHandle, Value);
 end;
 
-procedure TAudioZip.Start;
+procedure TAudioZip.Set_SystemVolume(const Value: single);
 begin
-  startAudioZip(FHandle);
+  setSystemVolume(FHandle, Value);
+end;
+
+function TAudioZip.Start(ADeviceID:integer):boolean;
+begin
+  Result := startAudioZip(FHandle, ADeviceID);
 end;
 
 procedure TAudioZip.Stop;
@@ -154,6 +213,7 @@ end;
 
 constructor TAudioUnZip.Create;
 begin
+  FMuted := false;
   FHandle := createAudioUnZip(Self, on_AudioUnZip_error);
 end;
 
