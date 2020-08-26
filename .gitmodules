@@ -1,0 +1,3 @@
+[submodule "Src/graphics32"]
+	path = Src/graphics32
+	url = https://github.com/graphics32/graphics32.git
