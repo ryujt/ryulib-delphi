@@ -27,6 +27,7 @@ begin
   if not Assigned(NetHandle) then Exit;
 
   try
+//    UrlHandle := InternetOpenUrl(NetHandle, PChar(AURL), nil, 0, INTERNET_FLAG_RESYNCHRONIZE, 0);
     UrlHandle := InternetOpenUrl(NetHandle, PChar(AURL), nil, 0, INTERNET_FLAG_RELOAD, 0);
     if not Assigned(UrlHandle) then Exit;
 
