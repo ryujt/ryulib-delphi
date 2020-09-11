@@ -675,45 +675,49 @@ var
    fs : TFileStream;
    ss : TStringStream;
 begin
-  fs := TFileStream.Create(AFileName, fmCreate);
-  ss := TStringStream.Create(AText);
   try
+    fs := TFileStream.Create(AFileName, fmCreate);
+    ss := TStringStream.Create(AText);
     ss.Position := 0;
     fs.CopyFrom(ss, ss.Size);
-  finally
     fs.Free;
     ss.Free;
+  except
+    on E : Exception do Trace('SaveTextToFile - ' + E.Message);
   end;
 end;
 
-Function  LoadFileAsText(FileName:String):String;
-Var
+function LoadFileAsText(FileName:String):String;
+var
    fs : TFileStream;
    ss : TStringStream;
-Begin
-  fs:= TFileStream.Create(FileName, fmOpenRead);
-  ss:= TStringStream.Create('');
-  Try
-    ss.CopyFrom(fs, fs.Size);
-    ss.Position:= 0;
-    Result:= ss.DataString;
-  Finally
-    ss.Free;
-    fs.Free;
-  End;
-End;
+ begin
+   Result := '';
+   try
+     fs := TFileStream.Create(FileName, fmOpenRead);
+     ss := TStringStream.Create('');
+     ss.CopyFrom(fs, fs.Size);
+     ss.Position := 0;
+     Result := ss.DataString;
+     ss.Free;
+     fs.Free;
+  except
+    on E : Exception do Trace('LoadFileAsText - ' + E.Message);
+   end;
+ end;
 
-procedure SaveTextToUTF8(AFileName,AText:string);
-var
-  f : TextFile;
-begin
-  try
+ procedure SaveTextToUTF8(AFilename, AText: string);
+ var
+   f: TextFile;
+ begin
+   try
     AssignFile(f, AFilename);
     Rewrite(f);
     SetTextCodePage(F, CP_UTF8);
     Write(f, AText);
     Close(f);
-  finally
+  except
+    on E : Exception do Trace('SaveTextToUTF8 - ' + E.Message);
   end;
 end;
 
@@ -723,7 +727,6 @@ var
   line : string;
 begin
   Result := '';
-
   try
     AssignFile(f, AFilename);
     Reset(f);
@@ -732,8 +735,9 @@ begin
       ReadLn(f, line);
       Result := Result + line + #13#10;
     end;
-  finally
     CloseFile(f);
+  except
+    on E : Exception do Trace('LoadFileAsUTF8 - ' + E.Message);
   end;
 end;
 
@@ -741,14 +745,15 @@ procedure SaveLogMessage(FileName,Msg:String);
 var
   LogFile : TextFile;
 begin
-  AssignFile(LogFile, FileName);
   try
+    AssignFile(LogFile, FileName);
     if FileExists(FileName) then Append(LogFile)
     else Rewrite(LogFile);
     WriteLn(LogFile, Msg);
     Flush(LogFile);
-  finally
     CloseFile(LogFile);
+  except
+    on E : Exception do Trace('SaveLogMessage - ' + E.Message);
   end;
 end;
 
@@ -756,14 +761,14 @@ procedure AddDataToFile(FileName:string; var Data; Size:integer);
 var
   fsData : TFileStream;
 begin
-  if FileExists(FileName) then fsData:= TFileStream.Create(FileName, fmOpenWrite)
-  else fsData:= TFileStream.Create(FileName, fmCreate);
-
   try
+    if FileExists(FileName) then fsData:= TFileStream.Create(FileName, fmOpenWrite)
+    else fsData:= TFileStream.Create(FileName, fmCreate);
     fsData.Position:= fsData.Size;
     fsData.Write(Data, Size);
-  finally
     fsData.Free;
+  except
+    on E : Exception do Trace('AddDataToFile - ' + E.Message);
   end;
 end;
 
