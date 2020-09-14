@@ -12,8 +12,7 @@ const
 
   {*
     경계 조건에서 실수가 있더라도 A.V. 에러가 나지 않도록 여유를 둔다.
-    2014.10.04 RyuSocket에서는 2KB 단위로 페이징을 한다.  그보다 작은 수치 때문에 에러가 발생했었다.
-    현재의 SAFE_ZONE 메모리 할당하는 최대 크기보다 작으면 곤란해 진다.
+    한 번에 할달 받을 수 있는 최대 크기이다.
   }
   SAFE_ZONE = 64 * 1024;
 
@@ -129,22 +128,15 @@ end;
 
 procedure TMemoryPool64.do_ResetIndex;
 var
-  iIndex, iDiv, iMod : int64;
+  iIndex : int64;
 begin
   iIndex := FIndex;
 
-  if iIndex > (FPoolSize  * 2) then begin
-    iDiv := (iIndex div POOL_UNIT_SIZE);
-    iDiv := (iDiv mod Length(FPools));
-
-    iMod := iIndex mod POOL_UNIT_SIZE;
-
-    // "iMod = iIndex mod FPoolSize" 처럼 계산했으나,
-    // 이경우 같은 Pool Unit에 다시 배정되어 방금 전 메모리를 덮어 쓸 위험이 있다.
-    InterlockedCompareExchange64(FIndex, (iDiv * POOL_UNIT_SIZE) + iMod, iIndex);
+  if iIndex > FPoolSize then begin
+    InterlockedCompareExchange64(FIndex, iIndex - FPoolSize, iIndex);
 
     {$IFDEF DEBUG}
-//    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iMod: %d, iIndex: %d', [FIndex, iMod, iIndex]) );
+    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iIndex: %d', [FIndex, iIndex]) );
     {$ENDIF}
   end;
 end;
@@ -165,7 +157,7 @@ begin
   if ASize > SAFE_ZONE then
     raise Exception.Create( Format('TBasicMemoryPool.GetMem - ASize > %d KB', [SAFE_ZONE div 1024]) );
 
-  iIndex := InterlockedExchangeAdd64( FIndex, ASize );
+  iIndex := InterlockedExchangeAdd64(FIndex, ASize);
 
   iDiv := iIndex div POOL_UNIT_SIZE;
   iMod := iIndex mod POOL_UNIT_SIZE;
@@ -209,22 +201,15 @@ end;
 
 procedure TMemoryPool32.do_ResetIndex;
 var
-  iIndex, iDiv, iMod : integer;
+  iIndex : integer;
 begin
   iIndex := FIndex;
 
-  if iIndex > (FPoolSize  * 2) then begin
-    iDiv := (iIndex div POOL_UNIT_SIZE);
-    iDiv := (iDiv mod Length(FPools));
-
-    iMod := iIndex mod POOL_UNIT_SIZE;
-
-    // "iMod = iIndex mod FPoolSize" 처럼 계산했으나,
-    // 이경우 같은 Pool Unit에 다시 배정되어 방금 전 메모리를 덮어 쓸 위험이 있다.
-    InterlockedCompareExchange(FIndex, (iDiv * POOL_UNIT_SIZE) + iMod, iIndex);
+  if iIndex > FPoolSize then begin
+    InterlockedCompareExchange(FIndex, iIndex - FPoolSize, iIndex);
 
     {$IFDEF DEBUG}
-//    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iMod: %d, iIndex: %d', [FIndex, iMod, iIndex]) );
+    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iIndex: %d', [FIndex, iIndex]) );
     {$ENDIF}
   end;
 end;
