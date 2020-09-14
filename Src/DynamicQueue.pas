@@ -6,8 +6,8 @@ uses
   Classes, SysUtils, SyncObjs;
 
 type
-  TSimpleIterateProcedure = reference to procedure(AItem:pointer);
-  TIterateProcedure = reference to procedure(AItem:pointer; var ANeedStop:boolean);
+  TSimpleIterateProcedure = reference to procedure(var AItem:pointer);
+  TIterateProcedure = reference to procedure(var AItem:pointer; var ANeedStop:boolean);
 
   PNode = ^TNode;
   TNode = record
