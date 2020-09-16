@@ -27,8 +27,9 @@ type
   TMemoryPool64 = class (TMemoryPool)
   private
     FPoolSize : int64;
-    FPools : array of pointer;
     FIndex : int64;
+    FUnitCount : int64;
+    FPools : array of pointer;
 
     // FIndex가 한계를 넘어서 마이너스로 가지 않도록 수정
     procedure do_ResetIndex;
@@ -43,8 +44,9 @@ type
   TMemoryPool32 = class (TMemoryPool)
   private
     FPoolSize : integer;
-    FPools : array of pointer;
     FIndex : integer;
+    FUnitCount : integer;
+    FPools : array of pointer;
 
     // FIndex가 한계를 넘어서 마이너스로 가지 않도록 수정
     procedure do_ResetIndex;
@@ -115,6 +117,7 @@ begin
   end;
 
   FIndex := 0;
+  FUnitCount := Length(FPools);
 end;
 
 destructor TMemoryPool64.Destroy;
@@ -132,7 +135,7 @@ var
 begin
   iIndex := FIndex;
 
-  if iIndex > FPoolSize then begin
+  if iIndex >= FPoolSize then begin
     InterlockedCompareExchange64(FIndex, iIndex - FPoolSize, iIndex);
 
     {$IFDEF DEBUG}
@@ -162,7 +165,7 @@ begin
   iDiv := iIndex div POOL_UNIT_SIZE;
   iMod := iIndex mod POOL_UNIT_SIZE;
 
-  AData := FPools[iDiv mod Length(FPools)];
+  AData := FPools[iDiv mod FUnitCount];
 
   Inc( PByte(AData), iMod );
 
@@ -188,6 +191,7 @@ begin
   end;
 
   FIndex := 0;
+  FUnitCount := Length(FPools);
 end;
 
 destructor TMemoryPool32.Destroy;
@@ -205,7 +209,7 @@ var
 begin
   iIndex := FIndex;
 
-  if iIndex > FPoolSize then begin
+  if iIndex >= FPoolSize then begin
     InterlockedCompareExchange(FIndex, iIndex - FPoolSize, iIndex);
 
     {$IFDEF DEBUG}
@@ -235,7 +239,7 @@ begin
   iDiv := iIndex div POOL_UNIT_SIZE;
   iMod := iIndex mod POOL_UNIT_SIZE;
 
-  AData := FPools[iDiv mod Length(FPools)];
+  AData := FPools[iDiv mod FUnitCount];
 
   Inc( PByte(AData), iMod );
 
