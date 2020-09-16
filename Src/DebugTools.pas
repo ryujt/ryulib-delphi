@@ -3,7 +3,12 @@ unit DebugTools;
 interface
 
 uses
+  SyncValues,
   Windows, Classes, SysUtils;
+
+var
+  TagInt : TSyncInteger;
+  TagStr : TSyncString;
 
 procedure Trace(const AMsg:string; const ATag:string='[Ryu] '); overload;
 procedure Trace(AMsg:integer; const ATag:string='[Ryu] '); overload;
@@ -34,6 +39,9 @@ begin
 end;
 
 initialization
+  TagInt := TSyncInteger.Create;
+  TagStr := TSyncString.Create;
+
   Queue := TSuspensionQueue<string>.Create;
 
   TSimpleThread.Create(
