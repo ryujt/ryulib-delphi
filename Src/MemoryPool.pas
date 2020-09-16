@@ -107,14 +107,10 @@ begin
   inherited Create;
 
   FPoolSize := APoolSize;
+  if APoolSize < POOL_UNIT_SIZE then FPoolSize := POOL_UNIT_SIZE;
 
-  if APoolSize <= POOL_UNIT_SIZE then begin
-    SetLength( FPools, 1 );
-    System.GetMem( FPools[0], POOL_UNIT_SIZE + SAFE_ZONE );
-  end else begin
-    SetLength( FPools, ((APoolSize-1) div POOL_UNIT_SIZE) + 1 );
-    for Loop := Low(FPools) to High(FPools) do System.GetMem( FPools[Loop], POOL_UNIT_SIZE + SAFE_ZONE );
-  end;
+  SetLength( FPools, ((APoolSize-1) div POOL_UNIT_SIZE) + 1 );
+  for Loop := Low(FPools) to High(FPools) do System.GetMem( FPools[Loop], POOL_UNIT_SIZE + SAFE_ZONE );
 
   FIndex := 0;
   FUnitCount := Length(FPools);
@@ -157,8 +153,8 @@ begin
 
   if ASize <= 0 then Exit;
 
-  if ASize > SAFE_ZONE then
-    raise Exception.Create( Format('TBasicMemoryPool.GetMem - ASize > %d KB', [SAFE_ZONE div 1024]) );
+  if ASize >= SAFE_ZONE then
+    raise Exception.Create( Format('TBasicMemoryPool.GetMem - ASize >= %d KB', [SAFE_ZONE div 1024]) );
 
   iIndex := InterlockedExchangeAdd64(FIndex, ASize);
 
@@ -181,14 +177,10 @@ begin
   inherited Create;
 
   FPoolSize := APoolSize;
+  if APoolSize < POOL_UNIT_SIZE then FPoolSize := POOL_UNIT_SIZE;
 
-  if APoolSize <= POOL_UNIT_SIZE then begin
-    SetLength( FPools, 1 );
-    System.GetMem( FPools[0], POOL_UNIT_SIZE + SAFE_ZONE );
-  end else begin
-    SetLength( FPools, ((APoolSize-1) div POOL_UNIT_SIZE) + 1 );
-    for Loop := Low(FPools) to High(FPools) do System.GetMem( FPools[Loop], POOL_UNIT_SIZE + SAFE_ZONE );
-  end;
+  SetLength( FPools, ((APoolSize-1) div POOL_UNIT_SIZE) + 1 );
+  for Loop := Low(FPools) to High(FPools) do System.GetMem( FPools[Loop], POOL_UNIT_SIZE + SAFE_ZONE );
 
   FIndex := 0;
   FUnitCount := Length(FPools);
