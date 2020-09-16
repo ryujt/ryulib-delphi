@@ -6,7 +6,7 @@ uses
   Classes, SysUtils, SyncObjs;
 
 type
-  TIterateProcedure<T> = reference to procedure(AItem:T; var ANeedStop:boolean);
+  TIterateProcedure<T> = reference to procedure(var AItem:T; var ANeedStop:boolean);
 
   TNode<T> = class
     Item : T;
