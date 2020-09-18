@@ -43,10 +43,15 @@ type
   }
   TMemoryRecylce = class
   strict private
+    // 돌려 받은 메모리를 바로 다시 할당하지 않도록 버퍼 공간을 둔다.
+    // 혹시라도 아주 짧은 순간에 돌려받은 메모리가 다른 프로세스에서 사용되거나 영향 줄까봐 노파심에
+    // 메모리를 조금 더 사용할 뿐 부정적 영향은 없을 거 같아서 추가된 코드 무시해도 된다.
+    FSpareSpace : integer;
+
     FSize : integer;
     FQueue : TThreadQueue<Pointer>;
   public
-    constructor Create;
+    constructor Create(ASpareSpace:integer=1024); reintroduce;
     destructor Destroy; override;
 
     function Get(ASize:integer):pointer; overload;
@@ -240,8 +245,11 @@ end;
 
 { TMemoryRecylce }
 
-constructor TMemoryRecylce.Create;
+constructor TMemoryRecylce.Create(ASpareSpace:integer);
 begin
+  inherited Create;
+
+  FSpareSpace := ASpareSpace;
   FSize := 0;
   FQueue := TThreadQueue<Pointer>.Create;
 end;
@@ -254,11 +262,6 @@ begin
 end;
 
 function TMemoryRecylce.Get(ASize: integer): pointer;
-const
-   // 돌려 받은 메모리를 바로 다시 할당하지 않도록 버퍼 공간을 둔다.
-   // 혹시라도 아주 짧은 순간에 돌려받은 메모리가 다른 프로세스에서 사용되거나 영향 줄까봐 노파심에
-   // 메모리를 조금 더 사용할 뿐 부정적 영향은 없을 거 같아서 추가된 코드 무시해도 된다.
-   SPARE_SPACE = 1024;
 begin
   if FSize = 0 then begin
     FSize := ASize;
@@ -267,7 +270,7 @@ begin
       raise Exception.Create('TMemoryRecylce.Get - 같은 크기의 메모리만 할당 받을 수 있습니다.');
   end;
 
-  if (FQueue.Count < SPARE_SPACE) or (not FQueue.Pop(Result)) then GetMem(Result, ASize);
+  if (FQueue.Count < FSpareSpace) or (not FQueue.Pop(Result)) then GetMem(Result, ASize);
 end;
 
 procedure TMemoryRecylce.Release(AData: pointer);
