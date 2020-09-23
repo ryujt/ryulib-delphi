@@ -135,7 +135,7 @@ begin
     InterlockedCompareExchange64(FIndex, iIndex - FPoolSize, iIndex);
 
     {$IFDEF DEBUG}
-    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iIndex: %d', [FIndex, iIndex]) );
+    Trace( Format('TMemoryPool64.do_ResetIndex - FIndex: %d, iIndex: %d', [FIndex, iIndex]) );
     {$ENDIF}
   end;
 end;
@@ -154,7 +154,7 @@ begin
   if ASize <= 0 then Exit;
 
   if ASize >= SAFE_ZONE then
-    raise Exception.Create( Format('TBasicMemoryPool.GetMem - ASize >= %d KB', [SAFE_ZONE div 1024]) );
+    raise Exception.Create( Format('TMemoryPool64.GetMem - ASize >= %d KB', [SAFE_ZONE div 1024]) );
 
   iIndex := InterlockedExchangeAdd64(FIndex, ASize);
 
@@ -205,7 +205,7 @@ begin
     InterlockedCompareExchange(FIndex, iIndex - FPoolSize, iIndex);
 
     {$IFDEF DEBUG}
-    Trace( Format('TBasicMemoryPool.do_ResetIndex - FIndex: %d, iIndex: %d', [FIndex, iIndex]) );
+    Trace( Format('TMemoryPool32.do_ResetIndex - FIndex: %d, iIndex: %d', [FIndex, iIndex]) );
     {$ENDIF}
   end;
 end;
@@ -224,7 +224,7 @@ begin
   if ASize <= 0 then Exit;
 
   if ASize > SAFE_ZONE then
-    raise Exception.Create( Format('TBasicMemoryPool.GetMem - ASize > %d KB', [SAFE_ZONE div 1024]) );
+    raise Exception.Create( Format('TMemoryPool32.GetMem - ASize > %d KB', [SAFE_ZONE div 1024]) );
 
   iIndex := InterlockedExchangeAdd( FIndex, ASize );
 
