@@ -51,7 +51,7 @@ type
     FSize : integer;
     FQueue : TThreadQueue<Pointer>;
   public
-    constructor Create(ASpareSpace:integer=1024); reintroduce;
+    constructor Create(ASpareSpace:integer); reintroduce;
     destructor Destroy; override;
 
     function Get(ASize:integer):pointer; overload;
