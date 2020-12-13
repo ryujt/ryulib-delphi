@@ -84,7 +84,7 @@ begin
   isAppWin := (Style and WS_EX_APPWINDOW) = WS_EX_APPWINDOW;
   isOwned := GetWindow(Handle, GW_OWNER) > 0;
 
-  if(not (isVisible and (isAppWin or (not isToolWin and not isOwned)))) then Exit;
+  if (not (isVisible and (isAppWin or (not isToolWin and not isOwned)))) then Exit;
 
   if GetWindowText(Handle, Caption, 256) > 0 then begin
     AppList := TApplicationList(Param);
