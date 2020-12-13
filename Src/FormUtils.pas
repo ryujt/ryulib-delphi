@@ -15,6 +15,8 @@ procedure SaveFormInfo(const APath:string; const AForm:TForm);
 var
   filename : string;
 begin
+  ForceDirectories(APath);
+
   if APath = '' then
     filename := DeleteRight(ParamStr(0), '.') + 'ini'
   else
