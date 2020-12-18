@@ -22,6 +22,7 @@ type
   public
     procedure GetMem(var AData:pointer; ASize:integer); overload; virtual; abstract;
     function GetMem(ASize:integer):pointer; overload; virtual; abstract;
+    function GetClone(ASrc:pointer; ASize:word): pointer; virtual;
   end;
 
   TMemoryPool64 = class (TMemoryPool)
@@ -96,6 +97,19 @@ function CloneMemory(AData:pointer; ASize:integer):pointer;
 begin
   Result := MemoryPoolObject.GetMem(ASize);
   Move(AData^, Result^, ASize);
+end;
+
+{ TMemoryPool }
+
+function TMemoryPool.GetClone(ASrc: pointer; ASize: word): pointer;
+begin
+  if ASize = 0 then begin
+    Result := nil;
+    Exit;
+  end;
+
+  Self.GetMem(Result, ASize);
+  Move(ASrc^, Result^, ASize);
 end;
 
 { TMemoryPool64 }
