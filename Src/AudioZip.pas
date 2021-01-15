@@ -13,7 +13,8 @@ type
   TAudioZip = class
   private
     FHandle : pointer;
-    FOnData: TDataEvent;
+    FOnSouce: TDataEvent;
+    FOnEncode: TDataEvent;
     FOnEror: TIntegerEvent;
     function Get_MicVolume: single;
     procedure Set_MicVolume(const Value: single);
@@ -34,7 +35,8 @@ type
     property SystemMuted : boolean read Get_IsSystemMuted write Set_IsSystemMuted;
     property MicVolume : single read Get_MicVolume write Set_MicVolume;
     property SystemVolume : single read Get_SystemVolume write Set_SystemVolume;
-    property OnData : TDataEvent read FOnData write FOnData;
+    property OnSouce : TDataEvent read FOnSouce write FOnSouce;
+    property OnEncode : TDataEvent read FOnEncode write FOnEncode;
     property OnEror : TIntegerEvent read FOnEror write FOnEror;
   end;
 
@@ -62,7 +64,7 @@ type
 procedure initAudioZip;
           cdecl; external 'AudioZip.dll' delayed;
 
-function  createAudioZip(AContext:pointer; AOnData:TCallBackData; AOnError:TCallBackError):pointer;
+function  createAudioZip(AContext:pointer; AOnSouce:TCallBackData; AOnEncode:TCallBackData; AOnError:TCallBackError):pointer;
           cdecl; external 'AudioZip.dll' delayed;
 
 function startAudioZip(AHandle:pointer; ADeviceID:integer):boolean;
@@ -124,11 +126,18 @@ implementation
 
 { TAudioZip }
 
-procedure on_AudioZip_data(AContext:pointer; AData:pointer; ASize:integer); cdecl;
+procedure on_AudioZip_souce(AContext:pointer; AData:pointer; ASize:integer); cdecl;
 var
   AudioZip : TAudioZip absolute AContext;
 begin
-  if Assigned(AudioZip.FOnData) then AudioZip.FOnData(AContext, AData, ASize);
+  if Assigned(AudioZip.FOnSouce) then AudioZip.FOnSouce(AContext, AData, ASize);
+end;
+
+procedure on_AudioZip_encode(AContext:pointer; AData:pointer; ASize:integer); cdecl;
+var
+  AudioZip : TAudioZip absolute AContext;
+begin
+  if Assigned(AudioZip.FOnEncode) then AudioZip.FOnEncode(AContext, AData, ASize);
 end;
 
 procedure on_AudioZip_error(AContext:pointer; ACode:integer); cdecl;
@@ -140,7 +149,7 @@ end;
 
 constructor TAudioZip.Create;
 begin
-  FHandle := createAudioZip(Self, on_AudioZip_data, on_AudioZip_error);
+  FHandle := createAudioZip(Self, on_AudioZip_souce, on_AudioZip_encode, on_AudioZip_error);
 end;
 
 destructor TAudioZip.Destroy;
