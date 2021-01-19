@@ -126,7 +126,7 @@ implementation
 
 { TAudioZip }
 
-procedure on_AudioZip_souce(AContext:pointer; AData:pointer; ASize:integer); cdecl;
+procedure on_AudioZip_source(AContext:pointer; AData:pointer; ASize:integer); cdecl;
 var
   AudioZip : TAudioZip absolute AContext;
 begin
@@ -149,7 +149,7 @@ end;
 
 constructor TAudioZip.Create;
 begin
-  FHandle := createAudioZip(Self, on_AudioZip_souce, on_AudioZip_encode, on_AudioZip_error);
+  FHandle := createAudioZip(Self, on_AudioZip_source, on_AudioZip_encode, on_AudioZip_error);
 end;
 
 destructor TAudioZip.Destroy;
