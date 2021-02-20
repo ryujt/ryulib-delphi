@@ -5,7 +5,7 @@ object WebServerModule: TWebServerModule
       Default = True
       Name = 'DefaultHandler'
       PathInfo = '/'
-      OnAction = WebModule1DefaultHandlerAction
+      OnAction = WebServerModuleDefaultHandlerAction
     end>
   Height = 230
   Width = 415
