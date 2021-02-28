@@ -15,6 +15,9 @@ type
   public
   end;
 
+var
+  RootPath: string;
+
 procedure StartWebServer(APort:integer);
 procedure StopWebServer;
 
@@ -44,7 +47,7 @@ var
   filename, ext : string;
   fsData : TFileStream;
 begin
-  filename := GetExecPath + Request.PathInfo;
+  filename := RootPath + Request.PathInfo;
   filename := StringReplace(filename, '/', '\', [rfReplaceAll]);
   filename := StringReplace(filename, '\\', '\', [rfReplaceAll]);
 
@@ -66,14 +69,10 @@ begin
 end;
 
 initialization
+  RootPath := GetExecPath;
+
   if WebRequestHandler <> nil then WebRequestHandler.WebModuleClass := TWebServerModule;
   _WebServer := TIdHTTPWebBrokerBridge.Create(nil);
 finalization
   //
 end.
-
-
-
-
-
-Content-Type: image/png
