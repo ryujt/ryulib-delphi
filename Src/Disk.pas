@@ -43,6 +43,7 @@ function ShellExecuteFile(FileName,Parameters,Directory:string):integer;
 procedure ShellExecuteAndWait(AFileName,AParams,APath: string);
 procedure ShellExecuteHide(FileName,Params,Directory:string);
 function RunFile(AFileName,AWorkDir:string; AVisibility:boolean=true):Cardinal;
+function GetDosOutput(App, Params, WorkDir: string): string;
 
 function  IniString(FileName,Section,Ident,DefaultStr:string):string;
 function  IniInteger(FileName,Section,Ident:string; DefaultInt:Integer):Integer;
@@ -567,6 +568,60 @@ begin
 
   if isCondition then Result := ProcessInfo.hProcess
   else Result := 0;
+end;
+
+function GetDosOutput(App, Params, WorkDir: string): string;
+var
+  SA: TSecurityAttributes;
+  SI: TStartupInfo;
+  PI: TProcessInformation;
+  StdOutPipeRead, StdOutPipeWrite: THandle;
+  WasOK: Boolean;
+  Buffer: array[0..255] of AnsiChar;
+  BytesRead: Cardinal;
+  Handle: Boolean;
+  cmdLine : string;
+begin
+  Result := '';
+  with SA do begin
+    nLength := SizeOf(SA);
+    bInheritHandle := True;
+    lpSecurityDescriptor := nil;
+  end;
+  CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SA, 0);
+  try
+    with SI do
+    begin
+      FillChar(SI, SizeOf(SI), 0);
+      cb := SizeOf(SI);
+      dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      wShowWindow := SW_HIDE;
+      hStdInput := GetStdHandle(STD_INPUT_HANDLE);
+      hStdOutput := StdOutPipeWrite;
+      hStdError := StdOutPipeWrite;
+    end;
+    cmdLine := Format('"%s" %s', [App, Params]);
+    Handle := CreateProcess(nil, PChar(cmdLine), nil, nil, True, 0, nil,
+                            PChar(WorkDir), SI, PI);
+    CloseHandle(StdOutPipeWrite);
+    if Handle then
+      try
+        repeat
+          WasOK := ReadFile(StdOutPipeRead, Buffer, 255, BytesRead, nil);
+          if BytesRead > 0 then
+          begin
+            Buffer[BytesRead] := #0;
+            Result := Result + Buffer;
+          end;
+        until not WasOK or (BytesRead = 0);
+        WaitForSingleObject(PI.hProcess, INFINITE);
+      finally
+        CloseHandle(PI.hThread);
+        CloseHandle(PI.hProcess);
+      end;
+  finally
+    CloseHandle(StdOutPipeRead);
+  end;
 end;
 
 Function  IniString(FileName,Section,Ident,DefaultStr:String):String;
