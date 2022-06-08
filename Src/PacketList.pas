@@ -137,7 +137,7 @@ var
   Packet : TPacket;
 begin
   AFrom.FList.SimpleIterate(
-    procedure (AItem:pointer) begin
+    procedure (var AItem:pointer) begin
       Packet := Pointer(AItem);
 
       FList.Push(Packet);
