@@ -41,9 +41,11 @@ procedure DeleteFolder(AFolder:string);
 
 function ShellExecuteFile(FileName,Parameters,Directory:string):integer;
 procedure ShellExecuteAndWait(AFileName,AParams,APath: string);
+procedure ExecuteAndWait(const ACommand,APath: string);
+
 procedure ShellExecuteHide(FileName,Params,Directory:string);
 function RunFile(AFileName,AWorkDir:string; AVisibility:boolean=true):Cardinal;
-function GetDosOutput(App, Params, WorkDir: string): string;
+function GetDosOutput(App, Params, WorkDir: string; AHide:boolean=true): string;
 
 function  IniString(FileName,Section,Ident,DefaultStr:string):string;
 function  IniInteger(FileName,Section,Ident:string; DefaultInt:Integer):Integer;
@@ -510,8 +512,8 @@ begin
   FillChar(SEInfo, SizeOf(SEInfo), 0);
   SEInfo.cbSize := SizeOf(TShellExecuteInfo);
   with SEInfo do begin
-    fMask := SEE_MASK_NOCLOSEPROCESS;
-    Wnd := Application.Handle;
+    fMask := SEE_MASK_FLAG_DDEWAIT or SEE_MASK_FLAG_NO_UI or SEE_MASK_NOCLOSEPROCESS;
+    Wnd := Application.MainForm.Handle;
     lpFile := PChar(AFileName);
     lpParameters := PChar(AParams);
     lpDirectory := PChar(APath);
@@ -523,6 +525,32 @@ begin
       Application.ProcessMessages;
       GetExitCodeProcess(SEInfo.hProcess, ExitCode);
     until (ExitCode <> STILL_ACTIVE) or Application.Terminated;
+  end;
+end;
+
+procedure ExecuteAndWait(const ACommand,APath: string);
+var
+  StartupInfo: TStartupInfo;
+  ProcessInformation: TProcessInformation;
+begin
+  FillChar(StartupInfo, SizeOf(StartupInfo), 0);
+  with StartupInfo do begin
+    cb := SizeOf(TStartupInfo);
+    dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+    wShowWindow := SW_SHOWNORMAL;
+//    wShowWindow := SW_HIDE;
+  end;
+
+  if CreateProcess(nil, PChar(ACommand), nil, nil, true, CREATE_NO_WINDOW,
+    nil, PChar(APath), StartupInfo, ProcessInformation) then
+  begin
+    while WaitForSingleObject(ProcessInformation.hProcess, 10) > 0 do begin
+      Application.ProcessMessages;
+    end;
+    CloseHandle(ProcessInformation.hProcess);
+    CloseHandle(ProcessInformation.hThread);
+  end else begin
+    RaiseLastOSError;
   end;
 end;
 
@@ -539,7 +567,6 @@ begin
     exInfo.lpParameters := PChar(Params);
     exInfo.lpDirectory := PChar(Directory);
     lpFile := PChar(FileName);
-    nShow := SW_SHOWNORMAL;
     nShow := SW_HIDE;
   end;
 
@@ -570,7 +597,7 @@ begin
   else Result := 0;
 end;
 
-function GetDosOutput(App, Params, WorkDir: string): string;
+function GetDosOutput(App, Params, WorkDir: string; AHide:boolean): string;
 var
   SA: TSecurityAttributes;
   SI: TStartupInfo;
@@ -595,10 +622,15 @@ begin
       FillChar(SI, SizeOf(SI), 0);
       cb := SizeOf(SI);
       dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
-      wShowWindow := SW_HIDE;
       hStdInput := GetStdHandle(STD_INPUT_HANDLE);
       hStdOutput := StdOutPipeWrite;
       hStdError := StdOutPipeWrite;
+
+      if AHide then begin
+        wShowWindow := SW_HIDE;
+      end else begin
+        wShowWindow := SW_SHOWNORMAL;
+      end;
     end;
     cmdLine := Format('"%s" %s', [App, Params]);
     Handle := CreateProcess(nil, PChar(cmdLine), nil, nil, True, 0, nil,
