@@ -67,7 +67,6 @@ end;
 procedure TForm1.Button_SendClick(Sender: TObject);
 var
   Str : String;
-  Loop: Integer;
 begin
   if NewLine_CB.Checked then Str := Str + #13#10;
   ComPort.WriteStr(Str);

@@ -1882,7 +1882,7 @@ begin
   InitAsync(AsyncPtr);
   try
     setLength(rb,count);
-    Result := ReadAsync(rb[1], Count, AsyncPtr);  //  ReadStr(s, Count);
+    ReadAsync(rb[1], Count, AsyncPtr);  //  ReadStr(s, Count);
     //{$IFDEF Unicode}rb := UTF8Encode(s);{$ELSE} rb := s;  {$ENDIF}
     l := MultiByteToWideChar(FCodePage, 0, PAnsiChar(rb), Length(rb), nil, 0);
     SetLength(Str, l);
