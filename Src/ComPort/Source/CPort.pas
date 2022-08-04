@@ -59,7 +59,7 @@ type
   TStoredProp = (spBasic, spFlowControl, spBuffer, spTimeouts, spParity, spOthers);
   TStoredProps = set of TStoredProp;
   TComLinkEvent = (leConn, leCTS, leDSR, leRLSD, leRing, leRx, leTx, leTxEmpty, leRxFlag);
-  TRxCharEvent = procedure(Sender: TObject; Count: Integer) of object;
+  TRxCharEvent = procedure(Sender: TObject; var Count: Integer) of object;
   TRxBufEvent = procedure(Sender: TObject; const Buffer; Count: Integer) of object;
   TComErrorEvent = procedure(Sender: TObject; Errors: TComErrors) of object;
   TComSignalEvent = procedure(Sender: TObject; OnOff: Boolean) of object;
@@ -605,7 +605,7 @@ implementation
 
 uses
   {$IFNDEF No_Dialogs}  CPortSetup, {$ENDIF}
-   Controls, Forms, WinSpool;
+   Controls, Forms, WinSpool, System.Types;
 
 var
   // error messages
@@ -1508,6 +1508,7 @@ begin
   if FConnected and (FUpdateCount = 0) and
     not ((csDesigning in ComponentState) or (csLoading in ComponentState)) then
   begin
+    GetCommState(FHandle,DCB); // see Windows SDK, DCB Structure
     DCB.DCBlength := SizeOf(TDCB);
     DCB.XonLim := FBuffer.InputSize div 4;
     DCB.XoffLim := DCB.XonLim;
@@ -1882,7 +1883,7 @@ begin
   InitAsync(AsyncPtr);
   try
     setLength(rb,count);
-    Result := ReadAsync(rb[1], Count, AsyncPtr);  //  ReadStr(s, Count);
+    ReadAsync(rb[1], Count, AsyncPtr);  //  ReadStr(s, Count);
     //{$IFDEF Unicode}rb := UTF8Encode(s);{$ELSE} rb := s;  {$ENDIF}
     l := MultiByteToWideChar(FCodePage, 0, PAnsiChar(rb), Length(rb), nil, 0);
     SetLength(Str, l);
@@ -3470,7 +3471,7 @@ begin
 
       if ErrCode = ERROR_SUCCESS then
       begin
-        SetLength(Data, DataLen - 1);
+        SetLength(Data, DataLen div sizeof(char) - 1);
         TmpPorts.Add(Data);
         Inc(Index);
       end
