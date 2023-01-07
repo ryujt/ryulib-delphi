@@ -9,6 +9,7 @@ uses
 
 type
   {*
+    @param AUserData 사용자 정의 데이터 (외부에서 공유하는 포인터)
     @param ALocalData AsyncTask 내부의 전역변수처럼 사용한다. AProcedure,ACallBack 끼리 공유할 데이터가 있을 때 사용한다.
   *}
   TAsyncTaskProcedure = reference to procedure (AUserData:pointer; var ALocalData:pointer);
