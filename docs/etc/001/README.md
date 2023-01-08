@@ -15,8 +15,8 @@ But it will require you to register that component to use it on form designer.
 Unless that component is for general use, it's quite a hassle.
 So I suggest you use the following method.
 
-This method allows you to use the form designer without registering a new component.
-You can only add additional functions by delegating them to another unit.
+This method allows you to use the form designer without registering a new component,
+and you can only add additional functions by delegating them to another unit.
 
 ## Form unit
 
