@@ -60,8 +60,6 @@ constructor TfrAudioControl.Create(AOwner: TComponent);
 begin
   inherited;
 
-  // StartCaptrueButton has the same life cycle as this Application.
-  // So no need to destroy this object by code.
   TStartCaptrueButton.Create(btStartCaptrue, btStartCaptrueClick);
 end;
 
