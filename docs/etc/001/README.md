@@ -3,7 +3,7 @@
 This is a small tip for hiding extra codes from the mainstream.
 
 Suppose you have to write a program that starts broadcasting when you press a button
-and stops broadcasting when you press a button again.
+and stops broadcasting when you press that button again.
 
 ![](./pic-1.png)
 
