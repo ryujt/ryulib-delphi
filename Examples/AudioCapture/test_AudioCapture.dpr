@@ -3,7 +3,8 @@ program test_AudioCapture;
 uses
   Vcl.Forms,
   _fmMain in '_fmMain.pas' {fmMain},
-  _frAudioControl in '_frAudioControl.pas' {frAudioControl: TFrame};
+  _frAudioControl in '_frAudioControl.pas' {frAudioControl: TFrame},
+  StartCaptrueButton in 'StartCaptrueButton.pas';
 
 {$R *.res}
 

@@ -1,5 +1,25 @@
 # Hide UI detail codes
 
+This is a small tip for hiding extra codes from the mainstream.
+
+Suppose you have to write a program that starts broadcasting when you press a button
+and stops broadcasting when you press a button again.
+
+![](./pic-1.png)
+
+You can write all the code in the form unit,
+but it will obscure the fundamental purpose and be hard to understand.
+
+You can solve this by building a new button component and hiding details in that component.
+But it will require you to register that component to use it on form designer.
+Unless that component is for general use, it's quite a hassle.
+So I suggest you use the following method.
+
+This method allows you to use the form designer without registering a new component.
+You can only add additional functions by delegating them to another unit.
+
+## Form unit
+
 ``` pas
 unit _frAudioControl;
 
@@ -42,6 +62,8 @@ end;
 
 end.
 ```
+
+## StartCaptrueButton unit
 
 ``` pas
 unit StartCaptrueButton;
