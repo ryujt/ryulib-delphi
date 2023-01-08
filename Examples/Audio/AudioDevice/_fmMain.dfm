@@ -1,9 +1,9 @@
 object fmMain: TfmMain
   Left = 0
   Top = 0
-  Caption = 'Audio capture example'
-  ClientHeight = 260
-  ClientWidth = 554
+  Caption = 'fmMain'
+  ClientHeight = 561
+  ClientWidth = 784
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,16 +11,16 @@ object fmMain: TfmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  inline frAudioControl: TfrAudioControl
+  object ListBox: TListBox
     Left = 0
     Top = 0
-    Width = 554
-    Height = 260
+    Width = 784
+    Height = 561
     Align = alClient
+    ItemHeight = 13
     TabOrder = 0
-    ExplicitLeft = -70
-    ExplicitTop = -177
   end
 end

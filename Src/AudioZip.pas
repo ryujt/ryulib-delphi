@@ -18,23 +18,32 @@ type
     FOnEror: TIntegerEvent;
     function Get_MicVolume: single;
     procedure Set_MicVolume(const Value: single);
-    function Get_SystemVolume: single;
-    procedure Set_SystemVolume(const Value: single);
-    function Get_IsMicMuted: boolean;
-    function Get_IsSystemMuted: boolean;
-    procedure Set_IsMicMuted(const Value: boolean);
-    procedure Set_IsSystemMuted(const Value: boolean);
+    function GetSystemAudioVolume: single;
+    procedure SetSystemAudioVolume(const Value: single);
+    function GetMicMuted: boolean;
+    function GetSystemAudioMuted: boolean;
+    procedure SetMicMuted(const Value: boolean);
+    procedure SetSystemAudioMuted(const Value: boolean);
   public
     constructor Create;
     destructor Destroy; override;
 
-    function Start(ADeviceID:integer):boolean;
+    {*
+      Start capturing and compressing audio data.
+      @param ADeviceID ID of the audio device to capture (-1 is the default device)
+      @param AUseSystemAudio Decide whether to capture system audio.
+    *}
+    function Start(ADeviceID:integer; AUseSystemAudio:boolean=false):boolean;
+
+    {*
+      Stop capturing and compressing audio data.
+    *}
     procedure Stop;
   public
-    property MicMuted : boolean read Get_IsMicMuted write Set_IsMicMuted;
-    property SystemMuted : boolean read Get_IsSystemMuted write Set_IsSystemMuted;
+    property MicMuted : boolean read GetMicMuted write SetMicMuted;
+    property SystemAudioMuted : boolean read GetSystemAudioMuted write SetSystemAudioMuted;
     property MicVolume : single read Get_MicVolume write Set_MicVolume;
-    property SystemVolume : single read Get_SystemVolume write Set_SystemVolume;
+    property SystemAudioVolume : single read GetSystemAudioVolume write SetSystemAudioVolume;
     property OnSouce : TDataEvent read FOnSouce write FOnSouce;
     property OnEncode : TDataEvent read FOnEncode write FOnEncode;
     property OnEror : TIntegerEvent read FOnEror write FOnEror;
@@ -52,7 +61,18 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    {*
+      Decompresse auido data and paly it.
+      @parm AData Address of compressed audio data.
+      @param ASize Size of the compressed audio data.
+    *}
     procedure Play(AData:pointer; ASize:integer);
+
+    {*
+      Drop audio packets at the front of the buffer by a given number.
+      This method will remove delays caused by voice transmission and reception.
+      @param ACount Number of audio data to skip
+    *}
     procedure Skip(ACount:integer);
   public
     property DelayCount : integer read GetAudioUnZipDelayCount;
@@ -61,13 +81,15 @@ type
     property OnEror : TIntegerEvent read FOnEror write FOnEror;
   end;
 
+implementation
+
 procedure initAudioZip;
           cdecl; external 'AudioZip.dll' delayed;
 
 function  createAudioZip(AContext:pointer; AOnSouce:TCallBackData; AOnEncode:TCallBackData; AOnError:TCallBackError):pointer;
           cdecl; external 'AudioZip.dll' delayed;
 
-function startAudioZip(AHandle:pointer; ADeviceID:integer):boolean;
+function startAudioZip(AHandle:pointer; ADeviceID:integer; AUseSystemAudio:boolean):boolean;
           cdecl; external 'AudioZip.dll' delayed;
 
 procedure stopAudioZip(AHandle:pointer);
@@ -85,10 +107,10 @@ function  getMicVolume(AHandle:pointer):Single;
 function  getSystemVolume(AHandle:pointer):Single;
           cdecl; external 'AudioZip.dll' delayed;
 
-procedure setMicMuted(AHandle:pointer; AValue:boolean);
+procedure setMicMute(AHandle:pointer; AValue:boolean);
           cdecl; external 'AudioZip.dll' delayed;
 
-procedure setSystemMuted(AHandle:pointer; AValue:boolean);
+procedure setSystemMute(AHandle:pointer; AValue:boolean);
           cdecl; external 'AudioZip.dll' delayed;
 
 procedure setMicVolume(AHandle:pointer; AVolume:Single);
@@ -120,9 +142,6 @@ procedure setSpeakerVolume(AHandle:pointer; AVolume:Single);
 
 procedure releaseAudioUnZip(AHandle:pointer);
           cdecl; external 'AudioZip.dll' delayed;
-
-
-implementation
 
 { TAudioZip }
 
@@ -161,12 +180,12 @@ begin
   inherited;
 end;
 
-function TAudioZip.Get_IsMicMuted: boolean;
+function TAudioZip.GetMicMuted: boolean;
 begin
   Result := isMicMuted(FHandle);
 end;
 
-function TAudioZip.Get_IsSystemMuted: boolean;
+function TAudioZip.GetSystemAudioMuted: boolean;
 begin
   Result := isSystemMuted(FHandle);
 end;
@@ -176,19 +195,19 @@ begin
   Result := getMicVolume(FHandle);
 end;
 
-function TAudioZip.Get_SystemVolume: single;
+function TAudioZip.GetSystemAudioVolume: single;
 begin
   Result := getSystemVolume(FHandle);
 end;
 
-procedure TAudioZip.Set_IsMicMuted(const Value: boolean);
+procedure TAudioZip.SetMicMuted(const Value: boolean);
 begin
-  setMicMuted(FHandle, Value);
+  setMicMute(FHandle, Value);
 end;
 
-procedure TAudioZip.Set_IsSystemMuted(const Value: boolean);
+procedure TAudioZip.SetSystemAudioMuted(const Value: boolean);
 begin
-  setSystemMuted(FHandle, Value);
+  setSystemMute(FHandle, Value);
 end;
 
 procedure TAudioZip.Set_MicVolume(const Value: single);
@@ -196,14 +215,14 @@ begin
   setMicVolume(FHandle, Value);
 end;
 
-procedure TAudioZip.Set_SystemVolume(const Value: single);
+procedure TAudioZip.SetSystemAudioVolume(const Value: single);
 begin
   setSystemVolume(FHandle, Value);
 end;
 
-function TAudioZip.Start(ADeviceID:integer):boolean;
+function TAudioZip.Start(ADeviceID:integer; AUseSystemAudio:boolean=false):boolean;
 begin
-  Result := startAudioZip(FHandle, ADeviceID);
+  Result := startAudioZip(FHandle, ADeviceID, AUseSystemAudio);
 end;
 
 procedure TAudioZip.Stop;

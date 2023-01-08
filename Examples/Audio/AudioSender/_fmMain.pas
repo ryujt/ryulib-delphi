@@ -10,9 +10,7 @@ type
   TfmMain = class(TForm)
     frAudioControl: TfrAudioControl;
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var

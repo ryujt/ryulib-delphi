@@ -1,10 +1,9 @@
-program test_AudioCapture;
+program test_AudioReceiver;
 
 uses
   Vcl.Forms,
   _fmMain in '_fmMain.pas' {fmMain},
-  _frAudioControl in '_frAudioControl.pas' {frAudioControl: TFrame},
-  StartCaptrueButton in 'StartCaptrueButton.pas';
+  AudioReceiver in 'AudioReceiver.pas';
 
 {$R *.res}
 

@@ -19,6 +19,9 @@ type
 
 implementation
 
+uses
+  AudioSender;
+
 {$R *.dfm}
 
 { TfrAudioControl }
@@ -27,7 +30,8 @@ procedure TfrAudioControl.btStartCaptrueClick(Sender: TObject);
 var
   button : TStartCaptrueButton absolute Sender;
 begin
-  if button.OnAir then ShowMessage('Let''s start broadcast!');
+  if button.OnAir then TAudioSender.Obj.start(-1, false)
+  else TAudioSender.Obj.stop;
 end;
 
 constructor TfrAudioControl.Create(AOwner: TComponent);
