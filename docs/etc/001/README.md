@@ -18,6 +18,9 @@ So I suggest you use the following method.
 This method allows you to use the form designer without registering a new component,
 and you can only add additional functions by delegating them to another unit.
 
+The complete source code is here.
+* [https://github.com/ryujt/ryulib-delphi/tree/master/Examples/AudioCapture](https://github.com/ryujt/ryulib-delphi/tree/master/Examples/AudioCapture)
+
 ## Form unit
 
 ``` pas
