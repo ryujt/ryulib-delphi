@@ -1,6 +1,6 @@
 # Example of sending and receiving audio
 
-This post is a simple example of capturing, compressing and transmitting audio.
+This post is a simple example of capturing, compressing, and transmitting audio.
 
 ## Executable demo
 
