@@ -7,9 +7,11 @@ This post is a simple example of capturing, compressing, and transmitting audio.
 * [sending and receiving audio.zip](./sending%20and%20receiving%20audio.zip)
 
 Execute the test_AudioReceiver.exe file.
+
 ![](./pic-1.png)
 
 Execute the test_AudioSender.exe file.
+
 ![](./pic-1.png)
 
 Click the "off the air" button and say something.
