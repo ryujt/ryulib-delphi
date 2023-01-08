@@ -46,10 +46,25 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    {*
+      Start UDP socket.
+      @param ANeedBinding If ANeedBinding is true, it becomes a server socket.
+    *}
     procedure Start(ANeedBinding:boolean=true);
+
+    {*
+      Stop UDP socket.
+    *}
     procedure Stop;
 
+    {*
+      Send binary data to the APort of an AHost.
+    *}
     procedure SendTo(const AHost:string; APort:integer; AData:pointer; ASize:integer); overload;
+
+    {*
+      Send text data to the APort of an AHost.
+    *}
     procedure SendTo(const AHost:string; APort:integer; AText:string); overload;
   published
     property Active : boolean read FActive;
@@ -174,14 +189,14 @@ end;
 procedure TUDPSocket.on_FMainThread_Execute(ASimpleThread: TSimpleThread);
 begin
   while ASimpleThread.Terminated = false do begin
-    if (FSocket = -1) or (FIsServer = false) then begin
+    if FSocket = -1 then begin
       ASimpleThread.Sleep(5);
       Continue;
     end;
 
     try
       while FSendQueue.IsEmpty = false do do_Send;
-      do_Receive;
+      if FIsServer then do_Receive;
     except
       ASimpleThread.Sleep(5);
     end;
