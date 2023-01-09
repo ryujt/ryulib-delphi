@@ -19,7 +19,7 @@ This method allows you to use the form designer without registering a new compon
 and you can only add additional functions by delegating them to another unit.
 
 The complete source code is here.
-* [https://github.com/ryujt/ryulib-delphi/tree/master/Examples/Audio/AudioSender](https://github.com/ryujt/ryulib-delphi/tree/master/Examples/Audio/AudioSender)
+* [https://github.com/ryujt/ryulib-delphi/tree/master/Examples/Multimedia/AudioSender](https://github.com/ryujt/ryulib-delphi/tree/master/Examples/Multimedia/AudioSender)
 
 ## Form unit
 

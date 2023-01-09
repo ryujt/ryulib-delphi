@@ -24,8 +24,8 @@ Keep the microphone away from the speaker.
 ## Source codes
 
 ### Delphi
-* [AudioSender](https://github.com/ryujt/ryulib-delphi/tree/master/Examples/Audio/AudioSender)
-* [AudioReceiver](https://github.com/ryujt/ryulib-delphi/tree/master/Examples/Audio/AudioReceiver)
+* [AudioSender](https://github.com/ryujt/ryulib-delphi/tree/master/Examples/Multimedia/AudioSender)
+* [AudioReceiver](https://github.com/ryujt/ryulib-delphi/tree/master/Examples/Multimedia/AudioReceiver)
 
 ### C++
 * [RyuLib for C++](https://github.com/ryujt/ryulib-cpp)
