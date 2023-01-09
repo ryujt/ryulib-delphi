@@ -22,6 +22,7 @@ type
   IVideo = interface
     ['{E38F1280-9DB5-4C10-924B-F2B52054D2D4}']
     procedure SetVideoSource(AValue:TVideoSourceType);
+    procedure SetTargetWindow(AValue:integer);
   end;
 
   Iffmpeg = interface
@@ -31,6 +32,11 @@ type
   IVideoSourceChanged = interface
     ['{5A4E49F9-4344-402C-8BD2-52335C94B2B1}']
     procedure onVideoSourceChanged(AValue:TVideoSourceType);
+  end;
+
+  ITargetWindowChanged = interface
+    ['{017D1986-3049-4DDF-884E-67986C9EC42F}']
+    procedure onTargetWindowChanged(AValue:integer; ACaption:string);
   end;
 
   IRecordingChanged = interface

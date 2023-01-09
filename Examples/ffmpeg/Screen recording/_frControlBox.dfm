@@ -47,12 +47,23 @@ object frControlBox: TfrControlBox
     TabOrder = 2
     ExplicitTop = 240
     ExplicitWidth = 320
-    ExplicitHeight = 120
     DesignSize = (
       320
       120)
     inherited cbVideoSource: TComboBox
-      Width = 216
+      Width = 220
+      ExplicitWidth = 216
+    end
+    inherited plWindow: TPanel
+      Width = 301
+      ExplicitWidth = 301
+      inherited SpeedButton1: TSpeedButton
+        Left = 250
+      end
+      inherited edWindow: TEdit
+        Width = 236
+        ExplicitWidth = 236
+      end
     end
   end
 end

@@ -16,7 +16,8 @@ uses
   CoreBase in 'Core\CoreBase.pas',
   Audio in 'Core\Audio.pas',
   Video in 'Core\Video.pas',
-  ffmpeg in 'Core\ffmpeg.pas';
+  ffmpeg in 'Core\ffmpeg.pas',
+  _fmSelectWindow in '_fmSelectWindow.pas' {fmSelectWindow};
 
 {$R *.res}
 
@@ -25,5 +26,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TfmMain, fmMain);
   Application.CreateForm(TfmScreenRegion, fmScreenRegion);
+  Application.CreateForm(TfmSelectWindow, fmSelectWindow);
   Application.Run;
 end.

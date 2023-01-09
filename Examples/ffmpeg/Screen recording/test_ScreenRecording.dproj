@@ -144,6 +144,10 @@
         <DCCReference Include="Core\Audio.pas"/>
         <DCCReference Include="Core\Video.pas"/>
         <DCCReference Include="Core\ffmpeg.pas"/>
+        <DCCReference Include="_fmSelectWindow.pas">
+            <Form>fmSelectWindow</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
