@@ -20,11 +20,9 @@ type
   TUDPSocket = class(TComponent)
   private
     FSocket : TSocket;
-    FSendQueue : TDynamicQueue;
     FRecvQueue : TSuspensionQueue<TPacketUDP>;
     FBuffer : Pointer;
     function do_Bind:boolean;
-    procedure do_Send;
     procedure do_Receive;
   private
     FMainThread : TSimpleThread;
@@ -114,7 +112,6 @@ begin
 
   GetMem(FBuffer, FBufferSize);
 
-  FSendQueue := TDynamicQueue.Create(true);
   FRecvQueue := TSuspensionQueue<TPacketUDP>.Create;
 
   FMainThread := TSimpleThread.Create('TUDPSocket.FMainThread', on_FMainThread_Execute);
@@ -129,12 +126,9 @@ begin
   Stop;
 
   FMainThread.TerminateNow;
+  FRecvThread.TerminateNow;
 
   FreeMem(FBuffer);
-
-//  FreeAndNil(FSimpleThread);
-//  FreeAndNil(FSendQueue);
-//  FreeAndNil(FRecvQueue);
 
   inherited;
 end;
@@ -165,38 +159,16 @@ begin
     );
 end;
 
-procedure TUDPSocket.do_Send;
-var
-  SockAddr : TSockAddr;
-  PacketUDP : TPacketUDP;
-begin
-  if FSendQueue.Pop( Pointer(PacketUDP) ) = false then Exit;
-
-  try
-    FillChar(SockAddr, SizeOf(SockAddr), 0);
-
-    SockAddr.sin_family := AF_INET;
-    SockAddr.sin_port := htons(PacketUDP.Port);
-    SockAddr.sin_addr.S_addr := inet_addr(PAnsiChar(PacketUDP.Host));
-
-    if FSocket <> -1 then
-      WinSock.SendTo(FSocket, PacketUDP.Memory.Data^, PacketUDP.Memory.Size, 0, SockAddr, SizeOf(TSockAddr));
-  finally
-    PacketUDP.Free;
-  end;
-end;
-
 procedure TUDPSocket.on_FMainThread_Execute(ASimpleThread: TSimpleThread);
 begin
   while ASimpleThread.Terminated = false do begin
-    if FSocket = -1 then begin
+    if (FSocket = -1) or (FIsServer = false) then begin
       ASimpleThread.Sleep(5);
       Continue;
     end;
 
     try
-      while FSendQueue.IsEmpty = false do do_Send;
-      if FIsServer then do_Receive;
+      do_Receive;
     except
       ASimpleThread.Sleep(5);
     end;
@@ -216,6 +188,8 @@ begin
       PacketUDP.Free;
     end;
   end;
+
+  FreeAndNil(FRecvQueue);
 end;
 
 procedure TUDPSocket.SendTo(const AHost: string; APort: integer; AText: string);
@@ -233,8 +207,16 @@ end;
 
 procedure TUDPSocket.SendTo(const AHost: string; APort: integer; AData: pointer;
   ASize: integer);
+var
+  SockAddr : TSockAddr;
 begin
-  if FSocket <> -1 then FSendQueue.Push( Pointer(TPacketUDP.Create(AHost, APort, AData, ASize)) );
+  if FSocket = -1 then Exit;
+
+  FillChar(SockAddr, SizeOf(SockAddr), 0);
+  SockAddr.sin_family := AF_INET;
+  SockAddr.sin_port := htons(APort);
+  SockAddr.sin_addr.S_addr := inet_addr(PAnsiChar(AnsiString(AHost)));
+  WinSock.SendTo(FSocket, AData^, ASize, 0, SockAddr, SizeOf(TSockAddr));
 end;
 
 procedure TUDPSocket.SetBufferSize(const Value: integer);
