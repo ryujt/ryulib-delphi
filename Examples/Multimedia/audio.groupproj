@@ -3,13 +3,16 @@
         <ProjectGuid>{75945E5E-2AD3-4733-ADC0-D17E30FB8467}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="AudioDevice\example_AudioDevice.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="AudioSender\test_AudioSender.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="AudioSender2\test_AudioSender2.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="AudioReceiver\test_AudioReceiver.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="AudioDevice\example_AudioDevice.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -20,15 +23,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="example_AudioDevice">
-        <MSBuild Projects="AudioDevice\example_AudioDevice.dproj"/>
-    </Target>
-    <Target Name="example_AudioDevice:Clean">
-        <MSBuild Projects="AudioDevice\example_AudioDevice.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="example_AudioDevice:Make">
-        <MSBuild Projects="AudioDevice\example_AudioDevice.dproj" Targets="Make"/>
-    </Target>
     <Target Name="test_AudioSender">
         <MSBuild Projects="AudioSender\test_AudioSender.dproj"/>
     </Target>
@@ -37,6 +31,15 @@
     </Target>
     <Target Name="test_AudioSender:Make">
         <MSBuild Projects="AudioSender\test_AudioSender.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="test_AudioSender2">
+        <MSBuild Projects="AudioSender2\test_AudioSender2.dproj"/>
+    </Target>
+    <Target Name="test_AudioSender2:Clean">
+        <MSBuild Projects="AudioSender2\test_AudioSender2.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="test_AudioSender2:Make">
+        <MSBuild Projects="AudioSender2\test_AudioSender2.dproj" Targets="Make"/>
     </Target>
     <Target Name="test_AudioReceiver">
         <MSBuild Projects="AudioReceiver\test_AudioReceiver.dproj"/>
@@ -47,14 +50,23 @@
     <Target Name="test_AudioReceiver:Make">
         <MSBuild Projects="AudioReceiver\test_AudioReceiver.dproj" Targets="Make"/>
     </Target>
+    <Target Name="example_AudioDevice">
+        <MSBuild Projects="AudioDevice\example_AudioDevice.dproj"/>
+    </Target>
+    <Target Name="example_AudioDevice:Clean">
+        <MSBuild Projects="AudioDevice\example_AudioDevice.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="example_AudioDevice:Make">
+        <MSBuild Projects="AudioDevice\example_AudioDevice.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="example_AudioDevice;test_AudioSender;test_AudioReceiver"/>
+        <CallTarget Targets="test_AudioSender;test_AudioSender2;test_AudioReceiver;example_AudioDevice"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="example_AudioDevice:Clean;test_AudioSender:Clean;test_AudioReceiver:Clean"/>
+        <CallTarget Targets="test_AudioSender:Clean;test_AudioSender2:Clean;test_AudioReceiver:Clean;example_AudioDevice:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="example_AudioDevice:Make;test_AudioSender:Make;test_AudioReceiver:Make"/>
+        <CallTarget Targets="test_AudioSender:Make;test_AudioSender2:Make;test_AudioReceiver:Make;example_AudioDevice:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

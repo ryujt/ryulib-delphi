@@ -31,7 +31,7 @@ Keep the microphone away from the speaker.
 * [RyuLib for C++](https://github.com/ryujt/ryulib-cpp)
 * [AudioZip.dll](https://github.com/ryujt/ryulib-cpp/tree/master/dll/AudioZip)
 
-## Important classes
+## Main classes
 
 ### TAudioZip ([AudioZip.pas](https://github.com/ryujt/ryulib-delphi/blob/master/Src/AudioZip.pas))
 
