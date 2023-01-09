@@ -7,7 +7,7 @@ uses
   SysUtils, Classes;
 
 type
-  TAudio = class (TCoreBase)
+  TAudio = class (TCoreBase, IAudio)
   private
   public
     constructor Create(AOwner: TComponent); override;

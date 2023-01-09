@@ -6,6 +6,8 @@ uses
   SysUtils, Classes;
 
 type
+  TVideoSourceType = (vsRegion, vsWindow, vsMonitor);
+
   TNotifyProcedure = reference to procedure (AListener:TComponent);
 
   ICoreInternal = interface
@@ -19,10 +21,16 @@ type
 
   IVideo = interface
     ['{E38F1280-9DB5-4C10-924B-F2B52054D2D4}']
+    procedure SetVideoSource(AValue:TVideoSourceType);
   end;
 
   Iffmpeg = interface
     ['{EB7FC1D6-9E0D-4B89-A3E8-45E595A10743}']
+  end;
+
+  IVideoSourceChanged = interface
+    ['{5A4E49F9-4344-402C-8BD2-52335C94B2B1}']
+    procedure onVideoSourceChanged(AValue:TVideoSourceType);
   end;
 
   IRecordingChanged = interface

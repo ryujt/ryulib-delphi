@@ -3,11 +3,12 @@ unit _fmScreenRegion;
 interface
 
 uses
+  CoreBase,
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, BitmapWindow;
 
 type
-  TfmScreenRegion = class(TForm)
+  TfmScreenRegion = class(TForm, IVideoSourceChanged, IRecordingChanged)
     BitmapWindow: TBitmapWindow;
     plClient: TPanel;
     plInfo: TPanel;
@@ -18,11 +19,23 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure tmInfoTimer(Sender: TObject);
     procedure tmBlinkTimer(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    // IVideoSourceChanged
+    procedure onVideoSourceChanged(AValue:TVideoSourceType);
+
+    // IRecordingChanged
+    procedure onRecordingStatusChanged(AValue:boolean);
   private
     procedure create_hole;
+  private
+    FRecording: boolean;
+    procedure SetRecording(const Value: boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  public
+    property Recording : boolean read FRecording write SetRecording;
   end;
 
 var
@@ -30,12 +43,20 @@ var
 
 implementation
 
+uses
+  Core;
+
 {$R *.dfm}
 
 constructor TfmScreenRegion.Create(AOwner: TComponent);
 begin
   inherited;
 
+  TCore.Obj.AddListener(Self);
+
+  FRecording := false;
+
+  Show;
   create_hole;
 end;
 
@@ -74,9 +95,40 @@ begin
   inherited;
 end;
 
+procedure TfmScreenRegion.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
 procedure TfmScreenRegion.FormResize(Sender: TObject);
 begin
   create_hole;
+end;
+
+procedure TfmScreenRegion.onRecordingStatusChanged(AValue: boolean);
+begin
+  plInfo.Visible := not AValue;
+  create_hole;
+  tmBlink.Enabled := AValue;
+
+  if AValue = false then begin
+    BitmapWindow.Visible := true;
+    Exit;
+  end;
+
+  if Visible then
+//    TOptions.Obj.ScreenOption.SetScreenRegion(
+//      Left + plClient.Left,
+//      Top  + plClient.Top,
+//      plClient.Width,
+//      plClient.Height
+//    );
+end;
+
+procedure TfmScreenRegion.onVideoSourceChanged(AValue: TVideoSourceType);
+begin
+  if AValue = vsRegion then Show
+  else Hide;
 end;
 
 procedure TfmScreenRegion.plInfoMouseDown(Sender: TObject; Button: TMouseButton;
@@ -84,6 +136,11 @@ procedure TfmScreenRegion.plInfoMouseDown(Sender: TObject; Button: TMouseButton;
 begin
   ReleaseCapture;
   Perform(WM_SysCommand, $F012, 0);
+end;
+
+procedure TfmScreenRegion.SetRecording(const Value: boolean);
+begin
+  FRecording := Value;
 end;
 
 procedure TfmScreenRegion.tmBlinkTimer(Sender: TObject);
@@ -98,24 +155,6 @@ end;
 
 end.
 
-procedure TfmSelectRegion.rp_OnAir(AParams: TJsonData);
-begin
-  plInfo.Visible := not AParams.Booleans['IsOnAir'];
-  create_hole;
-  tmBlink.Enabled := AParams.Booleans['IsOnAir'];
-
-  if AParams.Booleans['IsOnAir'] then begin
-    if Visible then
-      TOptions.Obj.ScreenOption.SetScreenRegion(
-        Left + plClient.Left,
-        Top  + plClient.Top,
-        plClient.Width,
-        plClient.Height
-      );
-  end else begin
-    BitmapWindow.Visible := true;
-  end;
-end;
 
 procedure TfmSelectRegion.rp_SetSelectRegionVisible(AParams: TJsonData);
 begin

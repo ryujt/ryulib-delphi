@@ -48,5 +48,11 @@ object frControlBox: TfrControlBox
     ExplicitTop = 240
     ExplicitWidth = 320
     ExplicitHeight = 120
+    DesignSize = (
+      320
+      120)
+    inherited cbVideoSource: TComboBox
+      Width = 216
+    end
   end
 end

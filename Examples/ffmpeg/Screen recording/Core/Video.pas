@@ -7,7 +7,7 @@ uses
   SysUtils, Classes;
 
 type
-  TVideo = class (TCoreBase)
+  TVideo = class (TCoreBase, IVideo)
   private
   public
     constructor Create(AOwner: TComponent); override;
@@ -15,6 +15,8 @@ type
 
     procedure Start;
     procedure Stop;
+
+    procedure SetVideoSource(AValue:TVideoSourceType);
   end;
 
 implementation
@@ -31,6 +33,16 @@ destructor TVideo.Destroy;
 begin
 
   inherited;
+end;
+
+procedure TVideo.SetVideoSource(AValue: TVideoSourceType);
+begin
+  FCore.NotifyAll(
+    procedure (AListener:TComponent)
+    begin
+      if Supports(AListener, IVideoSourceChanged) then (AListener as IVideoSourceChanged).onVideoSourceChanged(AValue);
+    end
+  );
 end;
 
 procedure TVideo.Start;

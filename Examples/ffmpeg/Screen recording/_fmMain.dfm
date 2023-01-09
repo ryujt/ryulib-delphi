@@ -32,5 +32,10 @@ object fmMain: TfmMain
     TabOrder = 1
     ExplicitLeft = 744
     ExplicitHeight = 681
+    inherited frVideoSource: TfrVideoSource
+      inherited cbVideoSource: TComboBox
+        ExplicitWidth = 216
+      end
+    end
   end
 end

@@ -11,21 +11,21 @@ object frAudioControl: TfrAudioControl
     340
     678)
   object Shape1: TShape
-    Left = 12
-    Top = 51
+    Left = 8
+    Top = 11
     Width = 75
     Height = 21
   end
   object Label1: TLabel
-    Left = 32
-    Top = 54
+    Left = 28
+    Top = 14
     Width = 15
     Height = 13
     Caption = 'Mic'
   end
   object cbSelectInputDevice: TComboBox
-    Left = 93
-    Top = 51
+    Left = 89
+    Top = 11
     Width = 236
     Height = 21
     Anchors = [akLeft, akTop, akRight]
@@ -33,8 +33,8 @@ object frAudioControl: TfrAudioControl
     Text = 'default audio input device'
   end
   object checkUseSystemAudio: TCheckBox
-    Left = 12
-    Top = 84
+    Left = 8
+    Top = 44
     Width = 317
     Height = 17
     Caption = 'Use System Audio'

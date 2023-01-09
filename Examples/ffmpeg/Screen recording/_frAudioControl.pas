@@ -15,7 +15,7 @@ type
     Label1: TLabel;
     cbSelectInputDevice: TComboBox;
     checkUseSystemAudio: TCheckBox;
-  private
+  private // IRecordingChanged
     procedure onRecordingStatusChanged(AValue:boolean);
   public
     constructor Create(AOwner: TComponent); override;

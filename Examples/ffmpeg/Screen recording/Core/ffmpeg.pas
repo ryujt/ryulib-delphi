@@ -7,7 +7,7 @@ uses
   SysUtils, Classes;
 
 type
-  Tffmpeg = class (TCoreBase)
+  Tffmpeg = class (TCoreBase, Iffmpeg)
   private
   public
     constructor Create(AOwner: TComponent); override;

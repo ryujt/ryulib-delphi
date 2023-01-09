@@ -17,6 +17,7 @@ object fmScreenRegion: TfmScreenRegion
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
+  OnClose = FormClose
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
@@ -1384,7 +1385,7 @@ object fmScreenRegion: TfmScreenRegion
       1290
       730)
     object plClient: TPanel
-      Left = 0
+      Left = 5
       Top = 5
       Width = 1280
       Height = 720
