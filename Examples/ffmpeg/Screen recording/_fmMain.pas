@@ -11,9 +11,7 @@ type
     frVideoPreview: TfrVideoPreview;
     frControlBox: TfrControlBox;
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var

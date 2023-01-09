@@ -14,13 +14,15 @@ object frControlBox: TfrControlBox
     ParentBackground = False
     ParentColor = False
     TabOrder = 0
+    ExplicitTop = 120
     ExplicitWidth = 320
     ExplicitHeight = 120
     inherited cbSelectInputDevice: TComboBox
       Width = 216
+      ExplicitWidth = 216
     end
   end
-  inline frMainControl1: TfrMainControl
+  inline frMainControl: TfrMainControl
     Left = 0
     Top = 0
     Width = 320
@@ -33,7 +35,7 @@ object frControlBox: TfrControlBox
     ExplicitWidth = 320
     ExplicitHeight = 120
   end
-  inline frVideoSource1: TfrVideoSource
+  inline frVideoSource: TfrVideoSource
     Left = 0
     Top = 240
     Width = 320

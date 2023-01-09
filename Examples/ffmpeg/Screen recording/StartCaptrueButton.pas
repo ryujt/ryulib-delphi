@@ -42,8 +42,8 @@ end;
 procedure TStartCaptrueButton.onClick(Sender: TObject);
 begin
   FOnAir := not FOnAir;
-  if FOnAir then FTarget.Caption := 'On Air'
-  else FTarget.Caption := 'off the air';
+  if FOnAir then FTarget.Caption := 'started'
+  else FTarget.Caption := 'stoped';
 
   if Assigned(FOnClick) then FOnClick(Self);
 end;

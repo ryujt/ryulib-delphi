@@ -23,22 +23,13 @@ object frAudioControl: TfrAudioControl
     Height = 13
     Caption = 'Mic'
   end
-  object btStartCaptrue: TButton
-    Left = 12
-    Top = 12
-    Width = 75
-    Height = 25
-    Caption = 'off the air'
-    TabOrder = 0
-    OnClick = btStartCaptrueClick
-  end
   object cbSelectInputDevice: TComboBox
     Left = 93
     Top = 51
     Width = 236
     Height = 21
     Anchors = [akLeft, akTop, akRight]
-    TabOrder = 1
+    TabOrder = 0
     Text = 'default audio input device'
   end
   object checkUseSystemAudio: TCheckBox
@@ -47,6 +38,6 @@ object frAudioControl: TfrAudioControl
     Width = 317
     Height = 17
     Caption = 'Use System Audio'
-    TabOrder = 2
+    TabOrder = 1
   end
 end

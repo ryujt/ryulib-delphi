@@ -13,7 +13,10 @@ uses
   _frVideoSource in '_frVideoSource.pas' {frVideoSource: TFrame},
   _frMainControl in '_frMainControl.pas' {frMainControl: TFrame},
   Core in 'Core\Core.pas',
-  MainControl in 'Core\MainControl.pas';
+  CoreBase in 'Core\CoreBase.pas',
+  Audio in 'Core\Audio.pas',
+  Video in 'Core\Video.pas',
+  ffmpeg in 'Core\ffmpeg.pas';
 
 {$R *.res}
 

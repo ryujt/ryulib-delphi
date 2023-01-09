@@ -7,4 +7,13 @@ object frMainControl: TfrMainControl
   ParentBackground = False
   ParentColor = False
   TabOrder = 0
+  object btStartCaptrue: TButton
+    Left = 12
+    Top = 12
+    Width = 75
+    Height = 25
+    Caption = 'stoped'
+    TabOrder = 0
+    OnClick = btStartCaptrueClick
+  end
 end

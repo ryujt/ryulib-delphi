@@ -10,12 +10,10 @@ uses
 type
   TfrControlBox = class(TFrame)
     frAudioControl: TfrAudioControl;
-    frMainControl1: TfrMainControl;
-    frVideoSource1: TfrVideoSource;
+    frMainControl: TfrMainControl;
+    frVideoSource: TfrVideoSource;
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 implementation

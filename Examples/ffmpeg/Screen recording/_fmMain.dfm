@@ -20,8 +20,8 @@ object fmMain: TfmMain
     Height = 681
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 66
-    ExplicitTop = -39
+    ExplicitWidth = 744
+    ExplicitHeight = 681
   end
   inline frControlBox: TfrControlBox
     Left = 744
@@ -30,13 +30,7 @@ object fmMain: TfmMain
     Height = 681
     Align = alRight
     TabOrder = 1
-    ExplicitLeft = 1208
-    ExplicitTop = 402
-    inherited frAudioControl: TfrAudioControl
-      ExplicitTop = 120
-      inherited cbSelectInputDevice: TComboBox
-        ExplicitWidth = 216
-      end
-    end
+    ExplicitLeft = 744
+    ExplicitHeight = 681
   end
 end
