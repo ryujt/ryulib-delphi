@@ -19,6 +19,7 @@ object fmScreenRegion: TfmScreenRegion
   OldCreateOrder = False
   OnClose = FormClose
   OnResize = FormResize
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object BitmapWindow: TBitmapWindow

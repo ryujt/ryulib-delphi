@@ -33,8 +33,11 @@ object fmMain: TfmMain
     ExplicitLeft = 744
     ExplicitHeight = 681
     inherited frVideoSource: TfrVideoSource
-      inherited cbVideoSource: TComboBox
-        ExplicitWidth = 216
+      inherited plMonitor: TPanel
+        ExplicitWidth = 301
+        inherited cbMonitor: TComboBox
+          ExplicitWidth = 284
+        end
       end
     end
   end

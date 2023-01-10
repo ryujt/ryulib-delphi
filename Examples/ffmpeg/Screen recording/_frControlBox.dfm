@@ -52,17 +52,24 @@ object frControlBox: TfrControlBox
       120)
     inherited cbVideoSource: TComboBox
       Width = 220
-      ExplicitWidth = 216
+      ExplicitWidth = 220
     end
     inherited plWindow: TPanel
       Width = 301
       ExplicitWidth = 301
       inherited SpeedButton1: TSpeedButton
         Left = 250
+        ExplicitLeft = 250
       end
       inherited edWindow: TEdit
         Width = 236
         ExplicitWidth = 236
+      end
+    end
+    inherited plMonitor: TPanel
+      Width = 301
+      inherited cbMonitor: TComboBox
+        Width = 284
       end
     end
   end

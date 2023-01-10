@@ -3,7 +3,7 @@ unit CoreBase;
 interface
 
 uses
-  SysUtils, Classes;
+  Types, SysUtils, Classes;
 
 type
   TVideoSourceType = (vsRegion, vsWindow, vsMonitor);
@@ -23,6 +23,7 @@ type
     ['{E38F1280-9DB5-4C10-924B-F2B52054D2D4}']
     procedure SetVideoSource(AValue:TVideoSourceType);
     procedure SetTargetWindow(AValue:integer);
+    procedure SetRegion(ARect:TRect);
   end;
 
   Iffmpeg = interface

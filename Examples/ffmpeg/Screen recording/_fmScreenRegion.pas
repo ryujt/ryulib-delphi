@@ -20,6 +20,7 @@ type
     procedure tmInfoTimer(Sender: TObject);
     procedure tmBlinkTimer(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
   private
     // IVideoSourceChanged
     procedure onVideoSourceChanged(AValue:TVideoSourceType);
@@ -34,6 +35,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure SetSize(AWidth,AHeight:integer);
   public
     property Recording : boolean read FRecording write SetRecording;
   end;
@@ -55,6 +58,7 @@ begin
   TCore.Obj.AddListener(Self);
 
   FRecording := false;
+  SetSize(1280, 720);
 
   Show;
   create_hole;
@@ -105,6 +109,11 @@ begin
   create_hole;
 end;
 
+procedure TfmScreenRegion.FormShow(Sender: TObject);
+begin
+  SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE);
+end;
+
 procedure TfmScreenRegion.onRecordingStatusChanged(AValue: boolean);
 begin
   plInfo.Visible := not AValue;
@@ -117,6 +126,7 @@ begin
   end;
 
   if Visible then
+  // TODO:
 //    TOptions.Obj.ScreenOption.SetScreenRegion(
 //      Left + plClient.Left,
 //      Top  + plClient.Top,
@@ -143,6 +153,12 @@ begin
   FRecording := Value;
 end;
 
+procedure TfmScreenRegion.SetSize(AWidth, AHeight: integer);
+begin
+  Width  := AWidth  + 13;
+  Height := AHeight + 13;
+end;
+
 procedure TfmScreenRegion.tmBlinkTimer(Sender: TObject);
 begin
   BitmapWindow.Visible := not BitmapWindow.Visible;
@@ -151,6 +167,12 @@ end;
 procedure TfmScreenRegion.tmInfoTimer(Sender: TObject);
 begin
   plInfo.Caption := Format('(%d, %d) - %d X %d', [Left + plClient.Left, Top + plClient.Top, plClient.Width, plClient.Height]);
+  TCore.Obj.Video.SetRegion(
+    Rect(
+      Left + plClient.Left, Top + plClient.Top,
+      Left + plClient.Left + Top + plClient.Top + plClient.Width, plClient.Height
+    )
+  );
 end;
 
 end.

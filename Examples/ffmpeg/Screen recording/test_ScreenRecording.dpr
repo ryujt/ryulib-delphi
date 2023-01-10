@@ -17,7 +17,8 @@ uses
   Audio in 'Core\Audio.pas',
   Video in 'Core\Video.pas',
   ffmpeg in 'Core\ffmpeg.pas',
-  _fmSelectWindow in '_fmSelectWindow.pas' {fmSelectWindow};
+  _fmSelectWindow in '_fmSelectWindow.pas' {fmSelectWindow},
+  ScreenUtils in 'Lib\ScreenUtils.pas';
 
 {$R *.res}
 

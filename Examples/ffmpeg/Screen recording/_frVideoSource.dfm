@@ -222,4 +222,29 @@ object frVideoSource: TfrVideoSource
       Text = 'The target window is not selected.'
     end
   end
+  object plMonitor: TPanel
+    Left = 8
+    Top = 44
+    Width = 321
+    Height = 65
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    BevelOuter = bvNone
+    Color = clWhite
+    ParentBackground = False
+    TabOrder = 2
+    Visible = False
+    DesignSize = (
+      321
+      65)
+    object cbMonitor: TComboBox
+      Left = 8
+      Top = 8
+      Width = 304
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 0
+      OnChange = cbMonitorChange
+      OnKeyPress = cbMonitorKeyPress
+    end
+  end
 end
