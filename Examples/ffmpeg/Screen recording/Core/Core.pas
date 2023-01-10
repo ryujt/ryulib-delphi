@@ -3,7 +3,6 @@ unit Core;
 interface
 
 uses
-  DebugTools,
   CoreBase, Audio, Video, ffmpeg,
   Generics.Collections,
   SysUtils, Classes;
@@ -56,7 +55,7 @@ end;
 
 procedure TCore.onAudioData(Sender: TObject; AData: pointer; ASize: integer);
 begin
-  Trace( IntToStr(ASize) );
+  Fffmpeg.WriteAudio(AData, ASize);
 end;
 
 procedure TCore.AddListener(AListener: TComponent);
