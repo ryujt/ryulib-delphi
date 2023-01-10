@@ -119,12 +119,3 @@ begin
 end;
 
 end.
-
-procedure TfmSelectWindow.rp_SetSelectWindowVisible(AParams: TJsonData);
-begin
-  Visible := AParams.Booleans['Visible'];
-  Timer.Enabled := AParams.Booleans['Visible'];
-  if Visible then TOptions.Obj.ScreenOption.SetTargetWindow(-1);
-end;
-
-

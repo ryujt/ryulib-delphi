@@ -13,6 +13,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     constructor Create(AOwner: TComponent); override;
+    procedure CreateParams(var Params:TCreateParams); override;
   public
   end;
 
@@ -32,6 +33,16 @@ begin
   Left := Application.MainForm.Width + 1;
   Top  := Application.MainForm.Top   + 1;
   Show;
+end;
+
+procedure TfmMain.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  with Params do begin
+    exStyle := exStyle or WS_EX_APPWINDOW;
+    WndParent := Winapi.Windows.GetDesktopWindow;
+  end;
 end;
 
 procedure TfmMain.FormClose(Sender: TObject; var Action: TCloseAction);
