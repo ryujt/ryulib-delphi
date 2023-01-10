@@ -15,6 +15,9 @@ type
 
     procedure Start;
     procedure Stop;
+
+    procedure WriteAudio(AData:pointer; ASize:integer);
+    procedure WriteVideo(AData:pointer; ASize:integer);
   end;
 
 implementation
@@ -39,6 +42,16 @@ begin
 end;
 
 procedure Tffmpeg.Stop;
+begin
+
+end;
+
+procedure Tffmpeg.WriteAudio(AData: pointer; ASize: integer);
+begin
+
+end;
+
+procedure Tffmpeg.WriteVideo(AData: pointer; ASize: integer);
 begin
 
 end;
