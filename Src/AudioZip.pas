@@ -13,9 +13,9 @@ type
   TAudioZip = class
   private
     FHandle : pointer;
-    FOnSouce: TDataEvent;
+    FOnSource: TDataEvent;
     FOnEncode: TDataEvent;
-    FOnEror: TIntegerEvent;
+    FOnError: TIntegerEvent;
     function Get_MicVolume: single;
     procedure Set_MicVolume(const Value: single);
     function GetSystemAudioVolume: single;
@@ -44,15 +44,15 @@ type
     property SystemAudioMuted : boolean read GetSystemAudioMuted write SetSystemAudioMuted;
     property MicVolume : single read Get_MicVolume write Set_MicVolume;
     property SystemAudioVolume : single read GetSystemAudioVolume write SetSystemAudioVolume;
-    property OnSouce : TDataEvent read FOnSouce write FOnSouce;
+    property OnSource : TDataEvent read FOnSource write FOnSource;
     property OnEncode : TDataEvent read FOnEncode write FOnEncode;
-    property OnEror : TIntegerEvent read FOnEror write FOnEror;
+    property OnError : TIntegerEvent read FOnError write FOnError;
   end;
 
   TAudioUnZip = class
   private
     FHandle : pointer;
-    FOnEror: TIntegerEvent;
+    FOnError: TIntegerEvent;
     FMuted: boolean;
     function GetAudioUnZipDelayCount: integer;
     function GetVolume: single;
@@ -78,7 +78,7 @@ type
     property DelayCount : integer read GetAudioUnZipDelayCount;
     property Muted : boolean read FMuted write FMuted;
     property Volume : single read GetVolume write SetVolume;
-    property OnEror : TIntegerEvent read FOnEror write FOnEror;
+    property OnError : TIntegerEvent read FOnError write FOnError;
   end;
 
 implementation
@@ -149,7 +149,7 @@ procedure on_AudioZip_source(AContext:pointer; AData:pointer; ASize:integer); cd
 var
   AudioZip : TAudioZip absolute AContext;
 begin
-  if Assigned(AudioZip.FOnSouce) then AudioZip.FOnSouce(AContext, AData, ASize);
+  if Assigned(AudioZip.FOnSource) then AudioZip.FOnSource(AContext, AData, ASize);
 end;
 
 procedure on_AudioZip_encode(AContext:pointer; AData:pointer; ASize:integer); cdecl;
@@ -163,7 +163,7 @@ procedure on_AudioZip_error(AContext:pointer; ACode:integer); cdecl;
 var
   AudioZip : TAudioZip absolute AContext;
 begin
-  if Assigned(AudioZip.FOnEror) then AudioZip.FOnEror(AContext, ACode);
+  if Assigned(AudioZip.FOnError) then AudioZip.FOnError(AContext, ACode);
 end;
 
 constructor TAudioZip.Create;
@@ -236,7 +236,7 @@ procedure on_AudioUnZip_error(AContext:pointer; ACode:integer); cdecl;
 var
   AudioZip : TAudioZip absolute AContext;
 begin
-  if Assigned(AudioZip.FOnEror) then AudioZip.FOnEror(AContext, ACode);
+  if Assigned(AudioZip.FOnError) then AudioZip.FOnError(AContext, ACode);
 end;
 
 constructor TAudioUnZip.Create;
