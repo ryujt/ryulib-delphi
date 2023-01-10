@@ -21,7 +21,7 @@ object fmMain: TfmMain
     Align = alClient
     TabOrder = 0
     ExplicitWidth = 324
-    ExplicitHeight = 81
+    ExplicitHeight = 201
     inherited cbSelectInputDevice: TComboBox
       Width = 220
     end
