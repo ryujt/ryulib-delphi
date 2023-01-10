@@ -7,7 +7,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls;
 
 type
-  // TODO: 라인 및 도형 그리기 등
+  // TODO: implement dsLine, dsRectangle, dsEllipse
   TDrawStyle = (dsEraser, dsPen, dsLine, dsRectangle, dsEllipse);
 
   TAcrylBoard = class (TCustomControl)
