@@ -12,6 +12,7 @@ type
     FVideoSource : TVideoSourceType;
     FTargetWindow : integer;
     FRect : TRect;
+    FOutputResolution : TSize;
     function GetWindowTitle(AHandle:integer):string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -23,6 +24,7 @@ type
     procedure SetVideoSource(AValue:TVideoSourceType);
     procedure SetTargetWindow(AValue:integer);
     procedure SetRegion(ARect:TRect);
+    procedure SetOutputResolution(AWidth,AHeight:integer);
   end;
   
 implementation
@@ -55,6 +57,12 @@ begin
   GetWindowText(AHandle, PChar(Result), len);
 
   if Trim(Result) = '' then Result := IntToStr(AHandle);
+end;
+
+procedure TVideo.SetOutputResolution(AWidth, AHeight: integer);
+begin
+  FOutputResolution.cx := AWidth;
+  FOutputResolution.cy := AHeight;
 end;
 
 procedure TVideo.SetRegion(ARect: TRect);

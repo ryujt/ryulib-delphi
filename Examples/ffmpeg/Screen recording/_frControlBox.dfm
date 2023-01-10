@@ -4,24 +4,6 @@ object frControlBox: TfrControlBox
   Width = 320
   Height = 540
   TabOrder = 0
-  inline frAudioControl: TfrAudioControl
-    Left = 0
-    Top = 120
-    Width = 320
-    Height = 120
-    Align = alTop
-    Color = clMoneyGreen
-    ParentBackground = False
-    ParentColor = False
-    TabOrder = 0
-    ExplicitTop = 120
-    ExplicitWidth = 320
-    ExplicitHeight = 120
-    inherited cbSelectInputDevice: TComboBox
-      Width = 216
-      ExplicitWidth = 216
-    end
-  end
   inline frMainControl: TfrMainControl
     Left = 0
     Top = 0
@@ -31,9 +13,29 @@ object frControlBox: TfrControlBox
     Color = clSkyBlue
     ParentBackground = False
     ParentColor = False
-    TabOrder = 1
+    TabOrder = 0
+    ExplicitLeft = 32
+    ExplicitTop = -36
     ExplicitWidth = 320
     ExplicitHeight = 120
+  end
+  inline frAudioControl: TfrAudioControl
+    Left = 0
+    Top = 120
+    Width = 320
+    Height = 120
+    Align = alTop
+    Color = clMoneyGreen
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 1
+    ExplicitTop = 124
+    ExplicitWidth = 320
+    ExplicitHeight = 120
+    inherited cbSelectInputDevice: TComboBox
+      Width = 216
+      ExplicitWidth = 216
+    end
   end
   inline frVideoSource: TfrVideoSource
     Left = 0
@@ -45,7 +47,7 @@ object frControlBox: TfrControlBox
     ParentBackground = False
     ParentColor = False
     TabOrder = 2
-    ExplicitTop = 240
+    ExplicitTop = 124
     ExplicitWidth = 320
     DesignSize = (
       320
@@ -68,8 +70,10 @@ object frControlBox: TfrControlBox
     end
     inherited plMonitor: TPanel
       Width = 301
+      ExplicitWidth = 301
       inherited cbMonitor: TComboBox
         Width = 284
+        ExplicitWidth = 284
       end
     end
   end

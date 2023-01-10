@@ -3,8 +3,8 @@ unit Core;
 interface
 
 uses
-  CoreBase,
-  Audio, Video, ffmpeg,
+  DebugTools,
+  CoreBase, Audio, Video, ffmpeg,
   Generics.Collections,
   SysUtils, Classes;
 
@@ -12,6 +12,8 @@ type
   TCore = class (TComponent, ICoreInternal)
   private
     FAudio : TAudio;
+    procedure onAudioData(Sender:TObject; AData:pointer; ASize:integer);
+  private
     FVideo : TVideo;
     Fffmpeg : Tffmpeg;
     procedure set_RecordingStatus(AValue:boolean);
@@ -52,6 +54,11 @@ begin
   Result := MyObject;
 end;
 
+procedure TCore.onAudioData(Sender: TObject; AData: pointer; ASize: integer);
+begin
+  Trace( IntToStr(ASize) );
+end;
+
 procedure TCore.AddListener(AListener: TComponent);
 begin
   FListener.Add(AListener);
@@ -64,6 +71,8 @@ begin
   FListener := TList<TComponent>.Create;
 
   FAudio := TAudio.Create(Self);
+  FAudio.OnData := onAudioData;
+
   FVideo := TVideo.Create(Self);
   Fffmpeg := Tffmpeg.Create(Self);
 end;

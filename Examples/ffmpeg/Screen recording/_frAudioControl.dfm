@@ -31,6 +31,7 @@ object frAudioControl: TfrAudioControl
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
     Text = 'default audio input device'
+    OnChange = cbSelectInputDeviceChange
   end
   object checkUseSystemAudio: TCheckBox
     Left = 8
@@ -39,5 +40,6 @@ object frAudioControl: TfrAudioControl
     Height = 17
     Caption = 'Use System Audio'
     TabOrder = 1
+    OnClick = checkUseSystemAudioClick
   end
 end

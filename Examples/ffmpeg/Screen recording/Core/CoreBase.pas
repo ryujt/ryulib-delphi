@@ -17,6 +17,8 @@ type
 
   IAudio = interface
     ['{6102301F-3259-4B76-9487-960CFBF6BBC6}']
+    procedure SetDeviceID(AID:integer);
+    procedure SetUseSystemAudio(AValue:boolean);
   end;
 
   IVideo = interface
@@ -24,6 +26,7 @@ type
     procedure SetVideoSource(AValue:TVideoSourceType);
     procedure SetTargetWindow(AValue:integer);
     procedure SetRegion(ARect:TRect);
+    procedure SetOutputResolution(AWidth,AHeight:integer);
   end;
 
   Iffmpeg = interface

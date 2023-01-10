@@ -15,6 +15,8 @@ type
     Label1: TLabel;
     cbSelectInputDevice: TComboBox;
     checkUseSystemAudio: TCheckBox;
+    procedure cbSelectInputDeviceChange(Sender: TObject);
+    procedure checkUseSystemAudioClick(Sender: TObject);
   private // IRecordingChanged
     procedure onRecordingStatusChanged(AValue:boolean);
   public
@@ -29,6 +31,16 @@ uses
 {$R *.dfm}
 
 { TfrAudioControl }
+
+procedure TfrAudioControl.cbSelectInputDeviceChange(Sender: TObject);
+begin
+  TCore.Obj.Audio.SetDeviceID( GetSelectInputDeviceComboBox(cbSelectInputDevice).DeviceID );
+end;
+
+procedure TfrAudioControl.checkUseSystemAudioClick(Sender: TObject);
+begin
+  TCore.Obj.Audio.SetUseSystemAudio(checkUseSystemAudio.Checked);
+end;
 
 constructor TfrAudioControl.Create(AOwner: TComponent);
 begin

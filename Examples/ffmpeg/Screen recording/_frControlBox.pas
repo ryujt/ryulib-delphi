@@ -9,8 +9,8 @@ uses
 
 type
   TfrControlBox = class(TFrame)
-    frAudioControl: TfrAudioControl;
     frMainControl: TfrMainControl;
+    frAudioControl: TfrAudioControl;
     frVideoSource: TfrVideoSource;
   private
   public

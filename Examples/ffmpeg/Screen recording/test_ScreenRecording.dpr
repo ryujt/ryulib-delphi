@@ -8,7 +8,6 @@ uses
   _fmScreenRegion in '_fmScreenRegion.pas' {fmScreenRegion},
   _frAudioControl in '_frAudioControl.pas' {frAudioControl: TFrame},
   SelectInputDeviceComboBox in 'SelectInputDeviceComboBox.pas',
-  StartCaptrueButton in 'StartCaptrueButton.pas',
   _frVideoSource in '_frVideoSource.pas' {frVideoSource: TFrame},
   _frMainControl in '_frMainControl.pas' {frMainControl: TFrame},
   Core in 'Core\Core.pas',
@@ -17,7 +16,8 @@ uses
   Video in 'Core\Video.pas',
   ffmpeg in 'Core\ffmpeg.pas',
   _fmSelectWindow in '_fmSelectWindow.pas' {fmSelectWindow},
-  ScreenUtils in 'Lib\ScreenUtils.pas';
+  ScreenUtils in 'Lib\ScreenUtils.pas',
+  SwitchButton in 'SwitchButton.pas';
 
 {$R *.res}
 
