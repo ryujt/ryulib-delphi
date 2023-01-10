@@ -11,6 +11,7 @@ object fmMain: TfmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   inline frVideoPreview: TfrVideoPreview
@@ -20,6 +21,7 @@ object fmMain: TfmMain
     Height = 681
     Align = alClient
     TabOrder = 0
+    ExplicitLeft = 2
     ExplicitWidth = 744
     ExplicitHeight = 681
   end

@@ -55,13 +55,14 @@ constructor TfmScreenRegion.Create(AOwner: TComponent);
 begin
   inherited;
 
-  TCore.Obj.AddListener(Self);
-
   FRecording := false;
-  SetSize(1280, 720);
 
-  Show;
+  Left := 0;
+  Top  := 0;
+
   create_hole;
+
+  TCore.Obj.AddListener(Self);
 end;
 
 procedure TfmScreenRegion.create_hole;
@@ -167,12 +168,12 @@ end;
 procedure TfmScreenRegion.tmInfoTimer(Sender: TObject);
 begin
   plInfo.Caption := Format('(%d, %d) - %d X %d', [Left + plClient.Left, Top + plClient.Top, plClient.Width, plClient.Height]);
-  TCore.Obj.Video.SetRegion(
-    Rect(
-      Left + plClient.Left, Top + plClient.Top,
-      Left + plClient.Left + Top + plClient.Top + plClient.Width, plClient.Height
-    )
-  );
+//  TCore.Obj.Video.SetRegion(
+//    Rect(
+//      Left + plClient.Left, Top + plClient.Top,
+//      Left + plClient.Left + Top + plClient.Top + plClient.Width, plClient.Height
+//    )
+//  );
 end;
 
 end.

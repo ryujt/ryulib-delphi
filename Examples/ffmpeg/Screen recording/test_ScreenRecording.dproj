@@ -126,7 +126,6 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="AudioSender.pas"/>
         <DCCReference Include="SelectInputDeviceComboBox.pas"/>
         <DCCReference Include="StartCaptrueButton.pas"/>
         <DCCReference Include="_frVideoSource.pas">

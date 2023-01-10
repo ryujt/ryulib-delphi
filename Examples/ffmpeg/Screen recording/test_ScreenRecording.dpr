@@ -7,7 +7,6 @@ uses
   _frControlBox in '_frControlBox.pas' {frControlBox: TFrame},
   _fmScreenRegion in '_fmScreenRegion.pas' {fmScreenRegion},
   _frAudioControl in '_frAudioControl.pas' {frAudioControl: TFrame},
-  AudioSender in 'AudioSender.pas',
   SelectInputDeviceComboBox in 'SelectInputDeviceComboBox.pas',
   StartCaptrueButton in 'StartCaptrueButton.pas',
   _frVideoSource in '_frVideoSource.pas' {frVideoSource: TFrame},
@@ -25,8 +24,8 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TfmMain, fmMain);
   Application.CreateForm(TfmScreenRegion, fmScreenRegion);
+  Application.CreateForm(TfmMain, fmMain);
   Application.CreateForm(TfmSelectWindow, fmSelectWindow);
   Application.Run;
 end.
