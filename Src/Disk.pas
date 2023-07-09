@@ -45,7 +45,7 @@ procedure ExecuteAndWait(const ACommand,APath: string);
 
 procedure ShellExecuteHide(FileName,Params,Directory:string);
 function RunFile(AFileName,AWorkDir:string; AVisibility:boolean=true):Cardinal;
-function GetDosOutput(App, Params, WorkDir: string; AHide:boolean=true): string;
+function GetDosOutput(CommandLine, WorkDir: string; AHide:boolean=true): string;
 
 function  IniString(FileName,Section,Ident,DefaultStr:string):string;
 function  IniInteger(FileName,Section,Ident:string; DefaultInt:Integer):Integer;
@@ -597,59 +597,53 @@ begin
   else Result := 0;
 end;
 
-function GetDosOutput(App, Params, WorkDir: string; AHide:boolean): string;
+function GetDosOutput(CommandLine, WorkDir: string; AHide:boolean): string;
 var
-  SA: TSecurityAttributes;
-  SI: TStartupInfo;
-  PI: TProcessInformation;
+  SecAtrrs: TSecurityAttributes;
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
   StdOutPipeRead, StdOutPipeWrite: THandle;
   WasOK: Boolean;
-  Buffer: array[0..255] of AnsiChar;
+  pCommandLine: array[0..255] of AnsiChar;
   BytesRead: Cardinal;
   Handle: Boolean;
-  cmdLine : string;
 begin
   Result := '';
-  with SA do begin
-    nLength := SizeOf(SA);
+  with SecAtrrs do begin
+    nLength := SizeOf(SecAtrrs);
     bInheritHandle := True;
     lpSecurityDescriptor := nil;
   end;
-  CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SA, 0);
+  CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SecAtrrs, 0);
   try
-    with SI do
+    with StartupInfo do
     begin
-      FillChar(SI, SizeOf(SI), 0);
-      cb := SizeOf(SI);
+      FillChar(StartupInfo, SizeOf(StartupInfo), 0);
+      cb := SizeOf(StartupInfo);
       dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
-      hStdInput := GetStdHandle(STD_INPUT_HANDLE);
+      wShowWindow := SW_HIDE;
+      hStdInput := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
       hStdOutput := StdOutPipeWrite;
       hStdError := StdOutPipeWrite;
-
-      if AHide then begin
-        wShowWindow := SW_HIDE;
-      end else begin
-        wShowWindow := SW_SHOWNORMAL;
-      end;
     end;
-    cmdLine := Format('"%s" %s', [App, Params]);
-    Handle := CreateProcess(nil, PChar(cmdLine), nil, nil, True, 0, nil,
-                            PChar(WorkDir), SI, PI);
+    Handle := CreateProcess(nil, PChar('cmd.exe /C ' + CommandLine),
+                            nil, nil, True, 0, nil,
+                            PChar(WorkDir), StartupInfo, ProcessInfo);
     CloseHandle(StdOutPipeWrite);
     if Handle then
       try
         repeat
-          WasOK := ReadFile(StdOutPipeRead, Buffer, 255, BytesRead, nil);
+          WasOK := windows.ReadFile(StdOutPipeRead, pCommandLine, 255, BytesRead, nil);
           if BytesRead > 0 then
           begin
-            Buffer[BytesRead] := #0;
-            Result := Result + Buffer;
+            pCommandLine[BytesRead] := #0;
+            Result := Result + pCommandLine;
           end;
         until not WasOK or (BytesRead = 0);
-        WaitForSingleObject(PI.hProcess, INFINITE);
+        WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
       finally
-        CloseHandle(PI.hThread);
-        CloseHandle(PI.hProcess);
+        CloseHandle(ProcessInfo.hThread);
+        CloseHandle(ProcessInfo.hProcess);
       end;
   finally
     CloseHandle(StdOutPipeRead);
