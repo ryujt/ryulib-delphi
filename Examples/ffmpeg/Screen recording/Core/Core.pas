@@ -29,6 +29,12 @@ type
 
     class function Obj:TCore;
 
+    {*
+       Termination processing of core objects is required when the application is terminating.
+       You should run this method on MainForm.OnClose.
+    *}
+    procedure Terminate;
+
     procedure AddListener(AListener:TComponent);
     procedure RemoveListener(AListener:TComponent);
 
@@ -146,6 +152,13 @@ begin
   end;
 
   set_RecordingStatus(false);
+end;
+
+procedure TCore.Terminate;
+begin
+    FAudio.Terminate;
+    FVideo.Terminate;
+    Fffmpeg.Terminate;
 end;
 
 end.

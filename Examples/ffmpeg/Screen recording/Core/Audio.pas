@@ -20,6 +20,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure Terminate;
+
     procedure Start;
     procedure Stop;
 
@@ -78,6 +80,11 @@ end;
 procedure TAudio.Stop;
 begin
   FAudioCapture.Stop;
+end;
+
+procedure TAudio.Terminate;
+begin
+  // TODO:
 end;
 
 end.

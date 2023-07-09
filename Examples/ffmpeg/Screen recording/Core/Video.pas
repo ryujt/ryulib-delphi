@@ -18,6 +18,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure Terminate;
+
     procedure Start;
     procedure Stop;
 
@@ -104,6 +106,11 @@ end;
 procedure TVideo.Stop;
 begin
 
+end;
+
+procedure TVideo.Terminate;
+begin
+  // TODO:
 end;
 
 end.

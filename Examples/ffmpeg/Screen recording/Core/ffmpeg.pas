@@ -13,6 +13,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure Terminate;
+
     procedure Start;
     procedure Stop;
 
@@ -44,6 +46,11 @@ end;
 procedure Tffmpeg.Stop;
 begin
 
+end;
+
+procedure Tffmpeg.Terminate;
+begin
+  // TODO:
 end;
 
 procedure Tffmpeg.WriteAudio(AData: pointer; ASize: integer);

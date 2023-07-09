@@ -102,7 +102,7 @@ end;
 
 procedure TfmScreenRegion.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  Action := caFree;
+  TCore.Obj.Terminate;
 end;
 
 procedure TfmScreenRegion.FormResize(Sender: TObject);
