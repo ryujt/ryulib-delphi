@@ -118,10 +118,10 @@ type
   private
     FHasSeeked: boolean;
   public
-    function Stat(out statstg: TStatStg; grfStatFlag: Longint): HResult; override; stdcall;
-    function Seek(dlibMove: Largeint; dwOrigin: Longint; out libNewPosition: Largeint): HResult; override; stdcall;
-    function Read(pv: Pointer; cb: Longint; pcbRead: PLongint): HResult; override; stdcall;
-    function CopyTo(stm: IStream; cb: Largeint; out cbRead: Largeint; out cbWritten: Largeint): HResult; override; stdcall;
+    function Stat(out statstg: TStatStg; grfStatFlag: DWORD): HResult; stdcall;
+    function Seek(dlibMove: Largeint; dwOrigin: DWORD; out libNewPosition: LargeUInt): HResult; stdcall;
+    function Read(pv: Pointer; cb: FixedUInt; pcbRead: PFixedUInt): HResult; virtual; stdcall;
+    function CopyTo(stm: IStream; cb: LargeUInt; out cbRead: LargeUInt; out cbWritten: LargeUInt): HResult; virtual; stdcall;
   end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -891,26 +891,26 @@ end;
 //              TFixedStreamAdapter
 //
 ////////////////////////////////////////////////////////////////////////////////
-function TFixedStreamAdapter.Seek(dlibMove: Largeint; dwOrigin: Longint; out libNewPosition: Largeint): HResult;
+function TFixedStreamAdapter.Seek(dlibMove: Largeint; dwOrigin: DWORD; out libNewPosition: LargeUInt): HResult;
 begin
   Result := inherited Seek(dlibMove, dwOrigin, libNewPosition);
   FHasSeeked := True;
 end;
 
-function TFixedStreamAdapter.Stat(out statstg: TStatStg; grfStatFlag: Longint): HResult;
+function TFixedStreamAdapter.Stat(out statstg: TStatStg; grfStatFlag: DWORD): HResult;
 begin
   Result := inherited Stat(statstg, grfStatFlag);
   statstg.pwcsName := nil;
 end;
 
-function TFixedStreamAdapter.Read(pv: Pointer; cb: Longint; pcbRead: PLongint): HResult;
+function TFixedStreamAdapter.Read(pv: Pointer; cb: FixedUInt; pcbRead: PFixedUInt): HResult;
 begin
   if (not FHasSeeked) then
     Seek(0, STREAM_SEEK_SET, PLargeint(nil)^);
   Result := inherited Read(pv, cb, pcbRead);
 end;
 
-function TFixedStreamAdapter.CopyTo(stm: IStream; cb: Largeint; out cbRead: Largeint; out cbWritten: Largeint): HResult;
+function TFixedStreamAdapter.CopyTo(pv: Pointer; cb: FixedUInt; pcbRead: PFixedUInt): HResult;
 const
   MaxBufSize = 1024 * 1024;  // 1mb
 var
